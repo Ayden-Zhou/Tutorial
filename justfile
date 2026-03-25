@@ -9,3 +9,8 @@ check:
 commit:
     git add .
     git commit -m "Log: 一次空提交"
+
+push:
+    git add .
+    git commit -m "Log: 一次空提交"
+    git push

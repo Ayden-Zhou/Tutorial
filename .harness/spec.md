@@ -154,6 +154,7 @@ Negative constraints:
 Goal:
 - 在单个 lecture 中判断哪些位置应插入演示代码块，以及哪些位置不应插入。
 - 插入的代码块必须服务于理解，风格极简，接近“可运行的伪代码”，而不是工程化实现。
+- 插入一些科学图表 
 - 该 skill 是 lecture 编写流程的最后一步之一，用来决定最终是否需要 code block，以及 code block 具体如何出现。
 
 When to use:
