@@ -1,0 +1,4 @@
+interface:
+  display_name: "Lecture Curation"
+  short_description: "Plan lecture structure from reference materials"
+  default_prompt: "Use $lecture-curation to read the provided reference files, design the lecture structure, and write docs/<part>/<lecture>.md with section headings and per-section relative reference paths."

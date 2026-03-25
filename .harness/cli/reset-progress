@@ -1,0 +1,8 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+script_dir="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+progress_file="$(cd "${script_dir}/.." && pwd)/progress.md"
+
+printf '# Progress\n\n## Current Status\n### 主要变动\n\n### 未完成\n\n### 当前 blocker\n\n## Message to Human\n- 无\n\n## History Logs\n' > "${progress_file}"
+echo "progress.md 已重置"

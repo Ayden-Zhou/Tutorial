@@ -1,0 +1,4 @@
+interface:
+  display_name: "Commit Progress"
+  short_description: "Sync notes, commit repo progress, reset state"
+  default_prompt: "Use $commit-progress to read .harness/progress.md and git diff, sync long-lived module notes into src/<module>/notes.md, draft a commit message, commit tracked changes, and reset progress."
