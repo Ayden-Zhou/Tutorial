@@ -45,85 +45,96 @@ Outputs:
 Suggested artifact:
 - `specs/lectures/<lecture_name>_plan.md`
 
-### 2. Skill: Skeleton Drafting
+### 2. Skill: Rough Draft
 
 Goal:
-- 基于已经确定的单个 lecture 结构计划，结合课件、模型知识和必要搜索，完成该 lecture 的 skeleton 填充。
-- 输出面向 notebook 教程编写的 lecture 骨架，而不是一次性写完所有正文。
+- 基于已经确定的单个 lecture 结构计划，结合课件、参考资料和必要搜索，直接写出一版材料尽量完整的 lecture 粗草稿。
+- 该 skill 的目标是先把值得保留的内容真正写进草稿，而不是只产出 skeleton；结构、语气和教学节奏可以留给后续 revise。
 
 When to use:
-- 当 lecture plan 已经基本确定，需要把它展开成 notebook 级别的章节骨架时。
-- 当用户需要 text block / code block 层面的结构草案，但还不准备写最终成稿时。
+- 当 lecture plan 已经基本确定，需要把筛过的材料真正写成一版连续草稿时。
+- 当希望 Skill 3 主要做重写、删改和教学化 revise，而不是再回头大量翻参考资料时。
 
 Artifact flow:
-- In: lecture plan
-- Out: lecture outline / skeleton
+- In: lecture plan + related materials
+- Out: rough lecture draft
 
 Responsibilities:
-- 以 lecture 计划文档为约束，逐 section 提炼应保留的核心概念。
-- 给出该 lecture 的 text block / code block 主结构。
-- 标注哪些位置需要最小可运行实验，哪些位置只需要文字推进，哪些位置可以留给补充阅读。
-- 必要时补充课件之外但对项目目标重要的知识点。
-- 让该 lecture 服务于“科研上手”的目标，而不是停留在课程复述。
+- 按 lecture plan 的 section 顺序，直接写出连续草稿，而不是只写标题、要点或 section schema。
+- 尽量保留参考材料中值得进入讲义的 insight、解释路径、例子、反例、桥接句和机制说明。
+- 对每个 section 保留足够材料，使 Skill 3 默认无需再查原始参考文件也能完成重写。
+- 对关键信息、精彩叙述候选和重要机制附 source anchors，保证后续可追溯。
+- 允许局部冗余、重复、语气不统一，只要这些内容有助于保全材料并支持后续 revise。
+- 必要时补充课件之外但对项目目标重要的知识点，但应与原始参考材料显式区分。
+- 标注哪些位置在 Skill 3 中需要重点处理，例如顺序待重组、术语跳跃、解释太平、段落重复或桥接不足。
 
 Non-goals:
-- 不重新做 lecture 层面的内容取舍，除非发现 lecture plan 存在明显缺口并单独汇报。
-- 不默认生成最终成稿，优先产出可继续写作的 skeleton。
+- 不追求一次性写成最终讲义。
+- 不为了流畅或简洁而过早删掉可能有价值的 insight、例子、机制解释或过渡表述。
+- 不把粗草稿写成原文摘抄拼贴或大段复制；应整理成可继续重写的教程草稿。
 - 不最终决定具体代码块写什么；如果需要具体演示代码，由 Skill 4 负责。
 
 Inputs:
 - 单个 lecture 的计划文档。
-- 多份与该 lecture 相关的课程 PDF。
+- 多份与该 lecture 相关的课程 PDF、讲义、论文、笔记或其他资料。
 - 项目目标与写作约定。
 - 必要时的补充搜索结果。
 
 Outputs:
-- 当前 lecture 的 skeleton。
-- 面向 notebook 的 text block / code block 结构建议。
-- 最小可运行实验位置建议。
-- section 级别的教学推进顺序。
+- 一版按 lecture plan 展开的连续粗草稿。
+- 按 section 组织的材料保留结果，包括应保留的 insight、例子、机制解释和桥接信息。
+- 关键事实、精彩叙述候选或重要机制的 source anchors。
+- 交给 Skill 3 的 revise 提示，说明哪里需要重组、删冗余、补桥接或统一语气。
 
 Suggested artifacts:
-- `specs/lectures/<lecture_name>_outline.md`
+- `specs/lectures/<lecture_name>_draft.md`
+
+Negative constraints:
+- 不要只交标题加 bullet points。
+- 不要把所有参考资料机械拼接成材料仓库。
+- 不要为了“像成稿”而过早抹平参考资料中真正有价值的 insight 和讲法。
+- 不要省略关键内容的来源锚点，否则 Skill 3 难以在必要时回查。
 
 ### 3. Skill: Writing Revision
 
 Goal:
-- 对已有讲义草稿进行 revise，使其在整体写作气质上达到“深入浅出、由具体到抽象、由问题到机制”的要求。
-- 该 skill 关注写作逻辑与表达质量，而不是机械套用固定模板。
+- 对 Skill 2 产出的粗草稿进行重写和 revise，使其在整体写作气质上达到“深入浅出、由具体到抽象、由问题到机制”的要求。
+- 该 skill 的核心任务是重组、删冗余、统一语气和打通认知路径，而不是再次做一轮大规模资料抽取。
 
 When to use:
-- 当 lecture 已经有 skeleton 或初稿，但讲解不够顺、太像资料堆砌、或不够“深入浅出”时。
-- 当需要统一多个 section 的教学节奏、叙述逻辑和读者体验时。
+- 当 lecture 已经有一版材料比较全的粗草稿，但讲解不够顺、太像材料堆叠、或不够“深入浅出”时。
+- 当需要把粗草稿改写成更接近最终讲义的教学叙述时。
 
 Artifact flow:
-- In: lecture outline / draft
+- In: rough lecture draft
 - Out: revised draft
 
 Responsibilities:
-- 检查一节内容是否沿着读者的认知路径推进，而不是沿着作者的知识结构堆叠。
+- 检查内容是否沿着读者的认知路径推进，而不是沿着作者的知识结构堆叠。
 - 调整讲解顺序，使内容尽量遵循“问题或现象 -> 机制直觉 -> 必要抽象 -> 验证或应用”的默认推进方向。
-- 删除或压缩只回答“是什么”、却没有回答“为什么需要”或“解决了什么问题”的段落。
+- 合并重复材料，删除只回答“是什么”却没有回答“为什么需要”或“解决了什么问题”的段落。
 - 将抽象内容尽量绑定到最小例子、可运行代码、图示或反例中的至少一种。
+- 保留 Skill 2 已经抽出的高价值 insight、好例子和好桥接，不要在重写过程中把它们误删或抹平。
+- 默认基于粗草稿完成 revise；只有当来源冲突、证据不足或内容明显缺失时，才回原始参考文件核对。
 - 在不牺牲严谨性的前提下，提升文字的可读性、推进感和教学性。
-- 保证不同章节可以采用不同展开方式，但整体上保持一致的写作逻辑与教学风格。
 - 可以指出某处“需要一个例子或演示”，但不负责最终决定是否插入 code block，也不负责生成最终代码块。
 
 Non-goals:
 - 不机械模仿某一教材的句式、段落模板或表面文风。
 - 不强制每个小节使用完全一致的结构。
-- 不以“覆盖更多信息”为目标；优先保证理解路径清晰。
+- 不默认重新通读全部参考资料；粗草稿应当是主要工作底稿。
+- 不把 revise 简化成只修语气和措辞；重点仍然是认知路径与教学推进。
 - 不作为最后一步去插入或删除具体代码块；代码演示的最终决策由 Skill 4 负责。
 
 Inputs:
-- 已有讲义草稿。
+- Skill 2 产出的 lecture 粗草稿。
 - 项目目标、读者画像与写作约定。
-- 必要时的原始课件、补充材料或相关代码。
+- 只有在必要时才使用的原始课件、补充材料或相关代码。
 
 Outputs:
-- 修订后的章节或小节草稿。
-- 对主要修改点的简要说明。
-- 对仍然存在的理解断层、术语跳跃或示例不足处的提示。
+- 修订后的章节或 lecture 草稿。
+- 对主要重组与改写点的简要说明。
+- 对仍然存在的理解断层、术语跳跃、示例不足或证据缺口的提示。
 
 Suggested artifacts:
 - `specs/writing_logic.md`
@@ -148,7 +159,6 @@ Negative constraints:
 - 不要把 code block 当作展示实现能力的堆砌。
 - 不要默认读者会自动把数学、代码和系统现象联系起来；需要显式搭桥。
 - 不要让一节内容只回答“是什么”，却不回答“为什么重要”。
-
 ### 4. Skill: Demo Insertion
 
 Goal:
@@ -212,11 +222,12 @@ Suggested artifacts:
 ### Workflow Boundary
 
 - Skill 1 负责单个 lecture 的资料筛选、内容取舍与 section 结构设计。
-- Skill 2 负责在既定 lecture plan 下进行 skeleton 填充。
-- Skill 3 负责对已有草稿进行写作逻辑与教学风格上的 revise。
+- Skill 2 负责在既定 lecture plan 下写出一版材料完整的 lecture 粗草稿。
+- Skill 3 负责基于该粗草稿进行重写、删改和教学风格上的 revise。
 - Skill 4 负责在最后阶段判断何时插入演示代码块，并生成极简的 tutorial code blocks。
 - Skill 1 先出方案，再通过用户交互收敛，不默认一次性定稿。
 - Skill 1 不写教程正文。
-- Skill 2 不重做 lecture 层面的内容取舍，除非发现明显缺口。
+- Skill 2 不重做 lecture 层面的内容取舍，除非发现明显缺口；但它必须把应保留的材料真正写进粗草稿，而不是只给提纲。
+- Skill 3 默认基于 Skill 2 的粗草稿完成 revise，不再重新通读参考资料；只有在来源冲突、证据不足或材料明显缺失时才回源核对。
 - Skill 3 可以建议需要例子或演示，但不最终决定 code block 的插入与实现。
 - Skill 4 不负责扩展 lecture 的理论覆盖范围；它只决定是否需要代码演示，以及代码应如何以极简形式出现。

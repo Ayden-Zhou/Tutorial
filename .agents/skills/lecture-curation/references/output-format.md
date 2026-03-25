@@ -15,21 +15,26 @@ Use this reference when writing the lecture framework file.
 ## Title Naming Rules
 
 - Name each heading after the teaching job it performs, not after the source file's wording.
-- Prefer titles that answer a question, define a mechanism, or mark a clear learning step.
+- Default to lecture-note style phrasing rather than conversational prompts.
+- Prefer concise noun phrases or mechanism/comparison/judgment forms such as `分箱逼近的基本思路`、`通用逼近的含义与边界`、`深度与宽度的表达效率`.
+- Use question-style headings only when the question itself is pedagogically central and still reads naturally in a printed outline.
+- Avoid casual heading openings such as `我们到底在问什么问题`、`为什么已经有启发`、`还能往哪里找解释`.
 - Keep sibling headings grammatically consistent when possible.
 - Prefer concise Chinese phrasing over translated textbook jargon.
 - Promote an intuitive explanation into its own heading when it materially improves understanding.
 - Do not create extra levels only for visual symmetry.
 
 Good section titles:
-- `## 1 从 AI 任务到学习问题`
-- `## 4 训练闭环是怎么工作的`
-- `### 4.3 反向传播：梯度从哪里来`
+- `## 1 AI 任务与学习问题的转化`
+- `## 4 训练闭环的工作机制`
+- `## 7 经典泛化理论及其局限`
+- `### 4.3 反向传播的梯度来源`
 
 Weak section titles:
-- `## 1 Introduction`
-- `## 2 Definitions`
-- `## 3 Other Topics`
+- `## 1 我们到底在学什么`
+- `## 2 为什么这个方法已经有启发`
+- `## 3 还能往哪里找解释`
+- `## 4 Other Topics`
 
 ## Section Block Format
 
@@ -38,7 +43,7 @@ Record the main supporting references at the `##` section level.
 Use this pattern:
 
 ```md
-## 1 从 AI 任务到学习问题
+## 1 AI 任务与学习问题的转化
 
 本节目标：
 - 让读者先把“学习问题”理解成从数据中拟合输入到输出的映射。
@@ -47,7 +52,7 @@ Use this pattern:
 - `../../../references/01_Deep_learning/01_Deep_learing_Foundatiosn/1_intro_2025.pdf`
 - `../../../references/01_Deep_learning/01_Deep_learing_Foundatiosn/lec-5.pdf`
 
-### 1.1 什么叫“从输入到输出的映射”
+### 1.1 输入输出映射的基本形式
 
 ### 1.2 数据、标签与目标
 ```

@@ -1,6 +1,6 @@
 ---
 name: lecture-curation
-description: Plan the structure of a single lecture from multiple reference files and user instructions, then write the lecture framework directly to a target Markdown file under docs/. Use when the user provides PDFs, notes, slides, papers, or other reference paths for one lecture and needs help deciding what to cover, how to organize sections and subsections, how to preserve high-value intuitive explanations as structure, and which reference files mainly support each section.
+description: Plan the structure of a single lecture from multiple reference files and user instructions, then write the lecture framework directly to the target Markdown file under docs/. Use when the user provides PDFs, notes, slides, papers, or other reference paths for one lecture and needs help deciding what to cover, how to organize sections and subsections, how to preserve high-value intuitive explanations as structure, and which reference files mainly support each section.
 ---
 
 # Lecture Curation
@@ -26,8 +26,12 @@ Read the provided references for one lecture, compare their teaching value, and 
 - Write the lecture title in Chinese.
 - Do not include the lecture number in the H1 title.
 - Use section and subsection boundaries to reflect teaching value, not the table of contents of any one source.
+- Default to lecture-note style headings rather than spoken-language prompts.
+- `##` headings should usually name a conceptual block, mechanism, result, comparison, or limitation.
+- `###` headings should usually name a concept, construction, example, conclusion, or caveat.
 - Promote a source idea into its own `##` or `###` when it gives readers a much better intuition, motivation, comparison, or mechanism view.
 - Keep the lecture focused on the current topic. Do not expand into a whole-course outline.
+- Avoid casual heading templates such as `我们到底在问什么问题`、`为什么已经有启发`、`还能往哪里找解释` unless the user explicitly wants a conversational style.
 
 4. Write the framework.
 - Write directly to the target Markdown file.
@@ -40,6 +44,7 @@ Read the provided references for one lecture, compare their teaching value, and 
 - Check that the section order follows a coherent learning path.
 - Check that every major section has explicit supporting references.
 - Check that the framework preserves high-value intuitive content even when the source treated it as a side note.
+- Check that the headings can stand alone in a printed outline and still read like a lecture handout.
 - Check that the output is still a framework, not a full lecture draft.
 
 ## Selection Heuristics
@@ -50,6 +55,7 @@ Read the provided references for one lecture, compare their teaching value, and 
 - Downweight content that mainly repeats definitions, notation, history, or exhaustive detail without improving understanding of the current lecture goal.
 - When several sources cover the same point, keep the source that explains it most clearly and use the others as support.
 - Preserve disagreements only when the difference itself is pedagogically useful.
+- Prefer heading names that would still make sense if extracted into a syllabus or printed lecture outline.
 
 ## Boundaries
 

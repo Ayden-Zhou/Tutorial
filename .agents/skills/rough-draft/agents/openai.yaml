@@ -1,0 +1,4 @@
+interface:
+  display_name: "Rough Draft"
+  short_description: "Draft lecture sections from curated materials"
+  default_prompt: "Use $rough-draft to write a material-complete rough draft for this lecture, or only for one named section if I specify a section scope."
