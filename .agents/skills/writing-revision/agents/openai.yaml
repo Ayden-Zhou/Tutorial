@@ -1,0 +1,4 @@
+interface:
+  display_name: "Writing Revision"
+  short_description: "Revise lecture drafts into teachable tutorial prose"
+  default_prompt: "Use $writing-revision to rewrite this rough lecture draft into a clearer tutorial chapter while preserving its key insights and examples."

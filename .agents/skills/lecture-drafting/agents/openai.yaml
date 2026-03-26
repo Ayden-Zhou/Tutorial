@@ -1,0 +1,4 @@
+interface:
+  display_name: "Lecture Drafting"
+  short_description: "Orchestrate section rough drafters and merge one lecture draft"
+  default_prompt: "Use $lecture-drafting to draft this lecture by coordinating section-level rough-draft workers and then merging the whole lecture into one material-complete rough draft."

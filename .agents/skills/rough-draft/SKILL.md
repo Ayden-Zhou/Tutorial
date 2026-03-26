@@ -1,13 +1,13 @@
 ---
 name: rough-draft
-description: Write a project-specific rough lecture draft from an existing lecture plan plus reference materials. Use when the user wants a material-complete but not yet polished draft for one lecture or one named section/subsection, especially when preserving source insights, examples, mechanism explanations, and source anchors matters more than final prose quality.
+description: Write a project-specific rough lecture draft from an existing lecture plan plus reference materials. Use when the user wants a material-complete but not yet polished draft for one lecture or one named section/subsection, especially when preserving source insights, examples, mechanism explanations, formulas, and source anchors matters more than final prose quality. For multi-subagent whole-lecture drafting or final merge of parallel section drafts, use `lecture-drafting` instead.
 ---
 
 # Rough Draft
 
 ## Overview
 
-Write a material-complete rough draft for this tutorial project from a settled lecture plan and the provided references. Preserve high-value explanations, insights, examples, and mechanism descriptions in draft form so later revision can focus on reorganization and teaching quality rather than re-reading source files.
+Write a material-complete rough draft for this tutorial project from a settled lecture plan and the provided references. Preserve high-value explanations, insights, examples, formulas, and mechanism descriptions in draft form so later revision can focus on reorganization and teaching quality rather than re-reading source files.
 
 ## Workflow
 
@@ -28,15 +28,18 @@ Write a material-complete rough draft for this tutorial project from a settled l
 - Build a compact source map while reading:
   - which explanations are worth preserving,
   - which examples or counterexamples are worth carrying forward,
+  - which formulas, symbols, or local derivation skeletons are necessary for the section to remain technically self-contained,
   - which mechanism descriptions are essential,
+  - which algorithmic steps or computation chains must remain explicit,
   - which passages are low-value repetition.
-- Prefer extracting insight and explanation paths over extracting isolated facts.
+- Prefer extracting insight and explanation paths over extracting isolated facts, but do not drop the technical core that makes the explanation mechanically correct.
 
 3. Decide what must survive into the rough draft.
-- Preserve the material that Skill 3 would be unhappy to lose: good motivations, crisp intuitions, informative examples, strong bridge sentences, and compact mechanism explanations.
+- Preserve the material that later writing revision would be unhappy to lose: good motivations, crisp intuitions, informative examples, strong bridge sentences, explicit mechanism explanations, and the minimum formula/notation set required to recover the technical core without reopening the source PDFs.
 - Preserve enough redundancy that later revision can cut safely.
-- Compress low-value repetition, notation boilerplate, and exhaustive detail that does not help the teaching path.
-- Keep source anchors for important claims, explanations, examples, and especially for any wording or framing that may need to be revisited.
+- Compress low-value repetition, secondary notation boilerplate, and exhaustive detail that does not help the teaching path.
+- Do not compress away formulas, definitions, symbol bindings, update equations, objective functions, or derivation skeletons when they are part of the section's core mechanism.
+- Keep source anchors for important claims, explanations, examples, formulas, and especially for any wording or framing that may need to be revisited.
 - Distinguish source-derived material from your own connective tissue.
 
 4. Draft directly in markdown.
@@ -45,11 +48,15 @@ Write a material-complete rough draft for this tutorial project from a settled l
 - Keep the draft clearly rough: it may be redundant, uneven in tone, or locally awkward, but it should already contain the important material.
 - Keep the lecture in Chinese by default, except for terms that are genuinely clearer in English.
 - Write bridge sentences when needed so later section-by-section revision still has visible continuity.
+- When a section depends on formulas or symbolic definitions, include them in the rough draft together with a short explanation of what each symbol or computation step is doing.
+- Use standard Markdown math delimiters for formulas that should render as mathematics: inline math uses `$...$`, display equations or short derivation blocks use `$$...$$`. Do not wrap formulas in backticks unless you are referring to the literal source text or showing non-rendering pseudocode.
+- Reserve backticks for code, file paths, API names, config keys, and other literal identifiers rather than mathematical expressions.
+- When a section depends on a mechanism chain, keep the chain explicit rather than replacing it with intuition-only prose.
 - If the user requests section-scoped mode, modify only the requested section area and preserve untouched neighboring sections unless the user explicitly asks for broader edits.
 
 5. Leave revise guidance for the next step.
 - Mark places where the draft is structurally weak, repetitive, too abstract, or missing a good local bridge.
-- Point out where Skill 3 should decide between multiple retained explanations or examples.
+- Point out where later writing revision should decide between multiple retained explanations or examples.
 - Point out any unresolved conflicts across sources.
 - Keep these notes short and local so they help revision without turning the draft into commentary.
 
@@ -76,18 +83,23 @@ Treat section-scoped drafting as a first-class mode, not as an afterthought.
 - Prefer material that answers why a concept exists, what problem it solves, or how a reader should build intuition for it.
 - Prefer preserving a good explanation path over preserving source order.
 - Preserve source-specific insight even when the current wording is not final.
-- Keep formulas and formal definitions only when they support the mechanism being explained in this scope.
+- Keep formulas and formal definitions whenever they are needed to make the section technically usable, not only when they add local flavor.
+- Prefer rendered math over code styling for equations: use `$...$` and `$$...$$` consistently so later revision does not need to normalize formula formatting.
+- Prefer a minimal but explicit technical core: objective function, key variable meanings, update equations, and short derivation skeletons beat prose-only summaries.
+- If a mechanism is easiest to preserve as a short equation chain or algorithm sketch, keep that structure in the rough draft and explain it briefly in words.
 - When several sources cover the same point, keep the version with the strongest teaching value and record the others as support if still useful.
 - When a source has a genuinely strong turn of explanation, preserve the idea and anchor it, even if the final prose will later be rewritten.
 
 ## Boundaries
 
 - Produce a rough draft, not a polished lecture.
+- Do not take ownership of lecture-wide parallel drafting orchestration or final merge; hand those tasks to `lecture-drafting`.
 - Do not downgrade into a skeleton, bullet list, or material dump.
 - Do not copy long stretches of source wording.
 - Do not decide final demo-code insertion in this step.
 - Do not broaden the lecture beyond the lecture plan unless the user explicitly asks for an expansion.
 - Do not silently drop a high-value example or insight just to make the draft sound smoother.
+- Do not silently replace a section's technical core with intuition-only prose when the source relies on formulas, symbolic definitions, or explicit computation steps.
 
 ## Resource
 

@@ -1,0 +1,4 @@
+interface:
+  display_name: "Lecture Revision"
+  short_description: "Orchestrate section revisers and integrate a whole lecture"
+  default_prompt: "Use $lecture-revision to revise this lecture by coordinating section-level revision workers and then integrating the whole lecture into one coherent draft."
