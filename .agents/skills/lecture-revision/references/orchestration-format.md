@@ -1,6 +1,6 @@
 # Orchestration Format
 
-Use this reference when coordinating a lecture-wide revision with multiple `writing-revision` workers.
+Use this reference when coordinating a lecture-wide revision with multiple `writing-reviser` workers. Each worker should execute the `writing-revision` skill locally.
 
 ## Continuity Brief
 

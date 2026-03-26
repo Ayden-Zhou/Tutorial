@@ -2,6 +2,10 @@
 
 ## Current Status
 ### 主要变动
+- 新建项目内专用 `demo-insertion` skill，负责在 lecture 结构稳定后按理解缺口直接生成并插入极简、可运行的教学 demo，并允许把由代码自然生成的最小图作为 demo 一部分。
+- 更新 `.harness/spec.md`：将 `Skill 6` 收紧为缺口驱动的 `Demo Insertion`，并新增资源驱动的 `Skill 7: Figure Curation`，明确前者负责按理解缺口直接生成并插入最小可运行 demo，后者负责从本地图片或用户提供网页中筛选并插入现成图片。
+- 收紧 `lecture-drafting` 的 worker 命名：明确编排层应 spawn `rough-drafter` subagent，而不是把底层 `rough-draft` skill 误写成 worker 名；同步修正 orchestration 模板与默认 prompt。
+- 收紧 `lecture-revision` 的 worker 命名：明确编排层应 spawn `writing-reviser` subagent，而不是把底层 `writing-revision` skill 误写成 subagent 名；同步修正 orchestration 文案与模板。
 - 收紧 `lecture-revision`：新增 audit-only 二次检查步骤，只允许拦截写作脚手架、课程结构元话语、source-aware 残留、记号不一致与公式转义污染等窄范围 lecture-level 问题，明确不升级为第二轮完整 revision。
 - 新建项目内专用 `lecture-drafting` skill，负责并行分派多个 `rough-draft` worker，并在最后合并成一版整讲 rough draft。
 - 并发调度 2 个 `writing-reviser` subagent，按 `## 1-4` 与 `## 5-8` 分工完成 `docs/core/01_Deep_Learning/01_Deep_Learning_Foundations.md` 的 lecture-level revision，并由主 agent 合并回正式文档。
@@ -19,7 +23,7 @@
 
 ### 未完成
 - 第二讲 outline 仍可能需要继续根据用户偏好微调标题粒度和课程风格。
-- 第一讲已完成一轮 `writing-revision`，正文从 source-aware rough draft 收紧为更面向读者的 teaching draft；下一步主要是 demo insertion 与必要的局部补图/补例。
+- 第一讲已开始进入 demo insertion：`Lecture 1` 现已在 `5.3`、`5.5`、`7.1` 插入 3 个最小教学 demo；后续仍可按需要继续补充其他局部图片或示例。
 
 ### 当前 blocker
 - 无。
@@ -29,6 +33,31 @@
 
 ## History Logs
 ### 2026-03-26
+- 更新 `.harness/spec.md` 的 `## Pending Task`：新增 `Pending Infrastructure: Demo Figure Pipeline`，把“运行 demo、记录数据、统一画图风格、保存到 `images/<part name>/` 并插回讲义”的需求先记为后续基础设施项。
+- 明确当前决定是不立即新建 skill，也不立刻把这套重基础设施压进 `Skill 6: Demo Insertion`；先维持 `Skill 6` 的最小 demo 职责，等需求积累后再决定是否抽象成专门脚手架。
+
+### 2026-03-26
+- 对 `docs/core/01_Deep_Learning/01_Deep_Learning_Foundations.md` 执行 `$demo-insertion`：在 `5.3` 插入手写最小 MLP 单步训练 demo，在 `5.5` 插入双月数据决策边界可视化 demo，在 `7.1` 插入多层线性等价性数值验证 demo。
+- 顺手修复了同一 lecture 中靠近 demo 区域的局部公式转义污染，包括 `\nabla` 链与二元交叉熵公式，避免读者在最小训练闭环处看到损坏的数学表达。
+- 本地验证：分别运行了 3 个插入 demo 的原型代码；单步训练 demo 输出 `loss before step: 0.7005`、`loss after step: 0.6971`，双月决策边界 demo 达到 `train accuracy: 0.919` 并成功生成图像，线性等价性 demo 输出 `max difference: 2.220446e-16`。
+
+### 2026-03-26
+- 新建 `.agents/skills/demo-insertion/`，完成项目内专用 `demo-insertion` skill：支持 full-lecture 与 section-scoped 两种模式，要求只在真正存在理解缺口时才插入最终 demo，并将最小、可运行、教学导向的代码块直接写回 lecture。
+- 新增 `references/demo-format.md`，约束 demo 插入时的 lead-in / follow-up、section-scoped 边界、placeholder 清理与最小 figure-from-code 写法。
+- 运行 `python3 /home/zhouyf/.codex/skills/.system/skill-creator/scripts/quick_validate.py .agents/skills/demo-insertion` 做结构校验，结果为 `Skill is valid!`。
+
+### 2026-03-26
+- 更新 `.harness/spec.md` 中 `Skill 6: Demo Insertion` 的定位：不再把主产物写成 demo 计划或位置建议，而是明确要求在判断确有理解缺口后，直接生成并插入极简、可运行的 demo code block。
+- 同步更新 `Skill 4`、workflow boundary 与 `Skill 6` 输出描述：`writing-revision` 只能留下 placeholder，最终 demo 代码的落稿与插入由 `Skill 6` 负责。
+
+### 2026-03-26
+- 更新 `.harness/spec.md`：将 `Skill 6: Demo Insertion` 明确为“缺口驱动”的 demo 决策与插入，只在讲义存在理解缺口时生成极简、可运行的 demo；不再把现成图片筛选混入其中。
+- 在 `.harness/spec.md` 中新增 `Skill 7: Figure Curation`，明确其为“资源驱动”的图片筛选与插入：先读取 `@image/<part name>` 下的本地图片或用户提供网页中的现成图片，再决定哪些图值得插入以及插在哪里。
+- 同步收紧 `Skill 4` 与 workflow boundary：`writing-revision` 只留下 code block / picture placeholder，不最终决定 demo 或现成图片插入；整讲 revision 只能建议哪里需要例子、demo 或图片。
+
+### 2026-03-26
+- 更新 `.agents/skills/lecture-drafting/SKILL.md`、其 `references/orchestration-format.md`、`agents/openai.yaml` 与 `.harness/spec.md`：把 lecture-level orchestration 中的 worker 实体名从 `rough-draft` 明确改为 `rough-drafter`，同时保留 `rough-draft` 作为底层 skill 名。
+- 更新 `.agents/skills/lecture-revision/SKILL.md`、其 `references/orchestration-format.md` 与 `.harness/spec.md`：把 lecture-level orchestration 中的 worker 实体名从 `writing-revision` 明确改为 `writing-reviser`，同时保留 `writing-revision` 作为底层 skill 名，避免混淆 subagent 与 skill。
 - 更新 `.agents/skills/lecture-revision/SKILL.md` 与 `.harness/spec.md`：为整讲 revision 增加 audit-only 二次检查机制，限定其只做窄范围 residue audit 与低风险清理，不做第二轮完整重写。
 - 新建 `.agents/skills/lecture-drafting/`，将其定义为整讲级 rough-draft orchestration skill：负责并行分派多个 `rough-draft` worker，并在最后统一做 section merge、术语一致性、source anchor 风格收口与最小必要连接。
 - 收紧 `rough-draft` 的 frontmatter 与正文边界，明确其不负责 lecture-level 的并行 drafting orchestration 和最终 merge；这些任务改由 `lecture-drafting` 负责。

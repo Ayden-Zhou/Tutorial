@@ -1,13 +1,13 @@
 ---
 name: lecture-revision
-description: Coordinate a full lecture revision by splitting sections across multiple `writing-revision` workers, then integrating the whole lecture into one coherent draft. Use when a whole lecture benefits from parallel section revision, when one agent should own cross-section bridges and terminology consistency, or when previous-lecture continuity should be handled once at lecture level instead of by every section reviser.
+description: Coordinate a full lecture revision by splitting sections across multiple `writing-reviser` subagents that execute `writing-revision`, then integrating the whole lecture into one coherent draft. Use when a whole lecture benefits from parallel section revision, when one agent should own cross-section bridges and terminology consistency, or when previous-lecture continuity should be handled once at lecture level instead of by every section reviser.
 ---
 
 # Lecture Revision
 
 ## Overview
 
-Revise one whole lecture by orchestrating multiple section-level `writing-revision` workers, integrating their outputs into a single coherent lecture draft, and then running one narrow audit-only pass. Own the lecture-level decisions that should not be duplicated across section workers: previous-lecture continuity, section-to-section bridges, terminology consistency, final deduplication, and final residue checks that are too global for section workers.
+Revise one whole lecture by orchestrating multiple section-level `writing-reviser` subagents, integrating their outputs into a single coherent lecture draft, and then running one narrow audit-only pass. Each worker subagent executes the repository's `writing-revision` skill. Own the lecture-level decisions that should not be duplicated across section workers: previous-lecture continuity, section-to-section bridges, terminology consistency, final deduplication, and final residue checks that are too global for section workers.
 
 ## Workflow
 
@@ -35,8 +35,8 @@ Revise one whole lecture by orchestrating multiple section-level `writing-revisi
 - Tell each worker they are not responsible for previous-lecture continuity or whole-lecture framing.
 - Tell each worker to keep local section quality high while avoiding edits outside their assigned scope.
 
-4. Spawn `writing-revision` workers.
-- Use `writing-revision` as the worker skill for section-local rewriting.
+4. Spawn `writing-reviser` workers.
+- Use the `writing-reviser` subagent for section-local rewriting; it should execute the repository's `writing-revision` skill.
 - Pass each worker only the minimum context needed:
   - the target file,
   - the assigned section boundary,

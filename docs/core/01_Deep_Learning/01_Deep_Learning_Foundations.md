@@ -40,6 +40,7 @@
 
 所以，这里可以先把“学习”理解成一件很具体的事：利用训练数据找到一个映射函数，使它不仅能解释已有样本，还能在未来样本上继续工作。下面再把这个映射进一步具体化，落到神经网络这种函数形式上。
 
+
 ## 2 神经网络的基本观点
 
 上一部分我们把问题压成了“学习一个从输入到输出的映射”。接下来要回答的是：神经网络到底是一种什么样的映射？如果一上来只给层、权重和激活函数的公式，读者很容易知道怎么写，却不知道自己在看什么。更稳妥的方式是先建立几个互补视角。神经网络既可以看成多层函数复合，也可以看成参数化函数族，还可以看成一种可微程序。三种说法讲的是同一个对象，只是强调点不同。
@@ -79,6 +80,13 @@ $$
 这个视角的价值在于，它把“网络在算什么”拆得很清楚。一个最小两层网络可以先算第一层线性输出，再过一个非线性得到隐藏表示，再算第二层线性输出，最后和标签比较得到损失。前向传播并不神秘，它只是把一串有依赖关系的基本运算顺着图执行完。
 
 更重要的是，这些中间量并不是算完就丢。它们后面还要在反向传播里继续出现，用来告诉每个参数应该往哪个方向改。所以把前向过程理解成“把输入送进计算图，得到预测和损失”的过程就够了。接下来再把这条抽象计算链落到一个最小神经网络的具体部件上。
+
+<div align="center">
+<img src="https://media.geeksforgeeks.org/wp-content/uploads/20200527173723/e34.png"  width="70%">
+<br>
+计算图
+</div>
+
 
 ## 3 最小神经网络的基本组成
 
@@ -130,7 +138,8 @@ $$
 
 $$
 \mathrm{ReLU}(z) = \max(0, z) .
-$$
+$$ 
+
 
 它对每个坐标单独作用，所以如果 $z$ 是向量，那么 $h = \mathrm{ReLU}(z)$ 表示对每个分量分别做“负的截成 0，正的保持不变”。
 
@@ -203,6 +212,66 @@ $$
 然后使用二元交叉熵。
 
 更重要的是机制关系：输出层决定模型往哪里看，损失函数决定模型怎样为这个输出负责。没有损失，模型只是一个会算数的函数；有了损失，它才变成一个能够告诉优化器“当前方向好不好”的学习系统。接下来就把这个目标函数真正接到训练循环里，看前向、反向和参数更新是怎样串起来的。
+
+
+
+## 3.6 感知机：单个神经元的简单模型
+
+如果把上一小节的线性层再往前收缩一步，可以得到一个更接近“单个神经元”的最小模型：感知机。对一个二分类任务来说，我们先计算
+
+$$
+z = w^T x + b ,
+$$
+
+再把这个线性输出送进一个最简单的阈值规则：
+
+$$
+y = \begin{cases}
+1, & z > 0 \\
+0, & z \le 0
+\end{cases}
+$$
+
+这件事的几何意义非常直接。参数 $w$ 和 $b$ 决定了一个边界
+
+$$
+w^T x + b = 0 ,
+$$
+
+当输入落在这条边界的一侧时，模型输出 1；落在另一侧时，模型输出 0。于是，感知机就成了一个最小分类器：在二维平面里，它画出的是一条直线；在三维空间里，它对应一个平面；在更高维里，它对应一个超平面。这样一来，前面“线性层会对某些输入方向更敏感”这句话就不只是代数描述了，而是可以直接理解成：模型正在试图找到一个合适的线性分界面，把不同类别分开。
+
+<div align="center" >
+<img src="https://visionbook.mit.edu/figures/neural_nets/perceptron_fig2.png" alt="Perceptron diagram from MIT Vision Book" width="30%">
+<br>
+单个感知机可以看成“线性层 + 阈值激活”的最小组合。
+</div>
+
+我们考虑一个有两个输入 $x_1$ 和 $x_2$、一个输出 $y$ 的感知机。令输入连接的权重为 $w_1 = 2$、$w_2 = 1$，并且 $b = 0$。$z$ 和 $y$ 作为 $x_1$ 与 $x_2$ 的函数时的取值如下图所示。
+
+<div align="center" >
+<img src="https://visionbook.mit.edu/figures/neural_nets/perceptron_as_classifier.png" width="80%">
+<br>
+感知机中隐藏单元 z 和输出单元 y 作为输入数据函数时的取值。
+</div>
+
+所以感知机的行为像一个分类器，但我们如何用它来学习呢？其思路是：给定数据 $\{x^{(i)}, y^{(i)}\}_{i=1}^{N}$，我们调节权重 $w$ 和偏置 $b$，以最小化一个分类损失 $L$，这个损失度量分类错误的数量：
+
+$$
+w^*, b^* =
+\arg\min_{w,b}
+\frac{1}{N}\sum_{i=1}^{N}
+L\bigl(w^T x^{(i)} + b,\ y^{(i)}\bigr)
+$$
+
+在下图中，这个优化过程对应于不断平移和旋转决策边界，直到找到一条能够把标记为 $y=0$ 的数据与标记为 
+$y=1$ 的数据分开的直线。
+
+
+<div align="center">
+<img src="https://visionbook.mit.edu/figures/neural_nets/fitting_a_perceptron.png" width="80%">
+<br>
+感知机可能的不同决策面
+</div>
 
 ## 4 神经网络的训练过程
 
@@ -304,7 +373,6 @@ $$
 b_1 \leftarrow b_1 - \eta \, \frac{dL}{db_1} .
 $$
 
-于是前一小节里的梯度式子就有了明确用途。它们不是为了证明“我们会微积分”，而是为了真正决定参数如何变化。
 
 实际训练中，经常不是对全数据集直接做这一步，而是只对一个 mini-batch 近似计算梯度，这就得到 SGD。更准确地说，参数更新是一种“根据当前这批样本给出的局部信号，对参数做一次小修正”的过程。学习率太大，可能一步跨过头；学习率太小，下降又会很慢。公式虽然简单，却已经足够解释很多训练现象。
 
@@ -355,8 +423,7 @@ $$
 接着定义二元交叉熵：
 
 $$
-L = -\frac{1}{B} \sum_{i=1}^B \left[y^{(i)} \log p^{(i)} + (1-y^{(i)}) \log(1-p^{(i)})
-ight].
+L = -\frac{1}{B} \sum_{i=1}^B \left[y^{(i)} \log p^{(i)} + (1-y^{(i)}) \log(1-p^{(i)})\right].
 $$
 
 实际框架里更常见的写法，是直接对 logits $z$ 使用 `BCEWithLogitsLoss`，这样数值更稳定，但它表达的机制没有变：先根据当前参数得到预测，再把预测误差压成一个可优化的标量。
@@ -364,27 +431,89 @@ $$
 接下来调用 `loss.backward()`，框架会沿着前向计算图自动求出 $dL/dW_1$、$dL/db_1$、$dL/dW_2$、$dL/db_2$。最后再由 `optimizer.step()` 按负梯度方向更新参数。于是一次迭代的骨架可以压成一条最重要的链：
 
 $$
-\text{forward} \to \text{compute } L \to 
-abla_\theta L \to \theta \leftarrow \theta - \eta 
-abla_\theta L.
+\text{forward} \to \text{compute } L \to \nabla_\theta L \to \theta \leftarrow \theta - \eta \nabla_\theta L.
 $$
 
 这里最值得盯住的不是 API 名字，而是每一步的职责。`forward` 在算当前参数对应的函数，`loss` 在衡量这次预测到底错了多少，`backward` 在把这个误差拆成每组参数各自应承担的局部责任，`step` 才真正把责任变成参数更新。
+
+如果只看公式，这条链还容易停留在纸面上。下面先故意不用框架的 `autograd`，而是手写一次最小 MLP 的前向、损失、梯度和参数更新。真正要观察的只有四个量：更新前后的 loss、梯度范数，以及参数是否真的沿着负梯度方向移动。
+
+```python
+import numpy as np
+
+
+def relu(values: np.ndarray) -> np.ndarray:
+    return np.maximum(values, 0.0)
+
+
+def sigmoid(values: np.ndarray) -> np.ndarray:
+    return 1.0 / (1.0 + np.exp(-values))
+
+
+rng = np.random.default_rng(0)
+inputs = np.array(
+    [
+        [-1.0, -1.0],
+        [-1.2, 0.8],
+        [0.9, -1.1],
+        [1.1, 0.9],
+    ],
+    dtype=np.float64,
+)
+labels = np.array([0.0, 1.0, 1.0, 0.0], dtype=np.float64)
+
+hidden_dim = 4
+learning_rate = 0.1
+W1 = 0.4 * rng.standard_normal((hidden_dim, 2))
+b1 = np.zeros(hidden_dim, dtype=np.float64)
+W2 = 0.4 * rng.standard_normal((1, hidden_dim))
+b2 = np.zeros(1, dtype=np.float64)
+
+hidden_pre = inputs @ W1.T + b1
+hidden_act = relu(hidden_pre)
+logits = (hidden_act @ W2.T).squeeze(-1)
+loss_before = np.mean(np.logaddexp(0.0, logits) - labels * logits)
+
+probabilities = sigmoid(logits)
+grad_logits = (probabilities - labels) / len(labels)
+grad_W2 = grad_logits[None, :] @ hidden_act
+grad_b2 = np.array([grad_logits.sum()])
+grad_hidden = grad_logits[:, None] @ W2
+grad_hidden_pre = grad_hidden * (hidden_pre > 0.0)
+grad_W1 = grad_hidden_pre.T @ inputs
+grad_b1 = grad_hidden_pre.sum(axis=0)
+
+W1_before = W1.copy()
+W1 -= learning_rate * grad_W1
+b1 -= learning_rate * grad_b1
+W2 -= learning_rate * grad_W2
+b2 -= learning_rate * grad_b2
+
+hidden_pre_after = inputs @ W1.T + b1
+hidden_act_after = relu(hidden_pre_after)
+logits_after = (hidden_act_after @ W2.T).squeeze(-1)
+loss_after = np.mean(np.logaddexp(0.0, logits_after) - labels * logits_after)
+
+print(f"loss before step: {loss_before:.4f}")
+print(f"loss after step:  {loss_after:.4f}")
+print(f"W1 grad norm:     {np.linalg.norm(grad_W1):.4f}")
+print(f"W1 change norm:   {np.linalg.norm(W1 - W1_before):.4f}")
+```
+
+如果运行后看到 loss 略微下降，同时参数变化量和 `-\eta \nabla L` 同量级，就说明前面分开的 `forward`、`loss`、`backward` 和 `step` 已经在一个最小例子里真正闭环了。
 
 ### 5.4 观察损失与参数的变化
 
 一个最小训练例子不能只“跑通”，还应该让读者看到哪些量真的变了。最基本的观测对象有两个：损失值和参数值。假设更新前参数是 $\theta_t$，更新后参数是 $\theta_{t+1}$，那么梯度下降满足
 
 $$
-\theta_{t+1} = \theta_t - \eta 
-abla_\theta L_{\mathrm{batch}}(\theta_t).
+\theta_{t+1} = \theta_t - \eta \nabla_\theta L_{\mathrm{batch}}(\theta_t).
 $$
 
 于是参数变化量大致就是
 
 $$
-\Delta \theta = -\eta 
-abla_\theta L_{\mathrm{batch}}.
+\Delta \theta = -\eta \nabla_\theta L_{\mathrm{batch}}.
 $$
 
 如果某个参数梯度很大，它一步就会改得更明显；如果某个参数梯度接近 $0$，它几乎不会动。把这个式子和实际数值对应起来，训练才不会继续停留在口号层面。
@@ -394,6 +523,85 @@ $$
 ### 5.5 可视化模型的决策结果
 
 二维 toy 数据还有一个很大的好处，就是模型最终学到了什么可以直接画出来。做法通常是：在平面上取一张网格，对每个网格点计算 logit $z(x)$ 或概率 $p(y=1 \mid x)$，再根据阈值 $p > 0.5$ 或 $z > 0$ 着色。这样一来，决策边界就不再只是抽象概念，而是图上的一条曲线。
+
+前面的单步更新只能说明参数会动，还看不出模型最后学到了什么。下面把同一类两层 ReLU MLP 在双月数据上多训练几轮，然后直接把概率场和决策边界画出来。这里最值得看的不是颜色本身，而是那条 `p(y=1 \mid x) = 0.5` 的黑线有没有明显弯起来。
+
+```python
+import numpy as np
+import matplotlib.pyplot as plt
+
+
+def relu(values: np.ndarray) -> np.ndarray:
+    return np.maximum(values, 0.0)
+
+
+def sigmoid(values: np.ndarray) -> np.ndarray:
+    return 1.0 / (1.0 + np.exp(-values))
+
+
+def make_two_moons(*, samples_per_class: int, noise: float, seed: int) -> tuple[np.ndarray, np.ndarray]:
+    rng = np.random.default_rng(seed)
+    angles = np.linspace(0.0, np.pi, samples_per_class)
+    upper = np.stack([np.cos(angles), np.sin(angles)], axis=1)
+    lower = np.stack([1.0 - np.cos(angles), 0.4 - np.sin(angles)], axis=1)
+    inputs = np.concatenate([upper, lower], axis=0)
+    labels = np.concatenate([np.zeros(samples_per_class), np.ones(samples_per_class)], axis=0)
+    inputs = inputs + noise * rng.standard_normal(inputs.shape)
+    return inputs.astype(np.float64), labels.astype(np.float64)
+
+
+rng = np.random.default_rng(0)
+inputs, labels = make_two_moons(samples_per_class=80, noise=0.08, seed=0)
+hidden_dim = 16
+learning_rate = 0.08
+W1 = 0.5 * rng.standard_normal((hidden_dim, 2))
+b1 = np.zeros(hidden_dim, dtype=np.float64)
+W2 = 0.5 * rng.standard_normal((1, hidden_dim))
+b2 = np.zeros(1, dtype=np.float64)
+
+for _ in range(800):
+    hidden_pre = inputs @ W1.T + b1
+    hidden_act = relu(hidden_pre)
+    logits = (hidden_act @ W2.T).squeeze(-1)
+    probabilities = sigmoid(logits)
+
+    grad_logits = (probabilities - labels) / len(labels)
+    grad_W2 = grad_logits[None, :] @ hidden_act
+    grad_b2 = np.array([grad_logits.sum()])
+    grad_hidden = grad_logits[:, None] @ W2
+    grad_hidden_pre = grad_hidden * (hidden_pre > 0.0)
+    grad_W1 = grad_hidden_pre.T @ inputs
+    grad_b1 = grad_hidden_pre.sum(axis=0)
+
+    W1 -= learning_rate * grad_W1
+    b1 -= learning_rate * grad_b1
+    W2 -= learning_rate * grad_W2
+    b2 -= learning_rate * grad_b2
+
+axis_values = np.linspace(-1.5, 2.5, 220)
+grid_x, grid_y = np.meshgrid(axis_values, axis_values)
+grid_points = np.stack([grid_x.ravel(), grid_y.ravel()], axis=1)
+grid_hidden = relu(grid_points @ W1.T + b1)
+grid_logits = (grid_hidden @ W2.T).squeeze(-1)
+grid_probabilities = sigmoid(grid_logits).reshape(grid_x.shape)
+
+plt.figure(figsize=(5, 4))
+plt.contourf(
+    grid_x,
+    grid_y,
+    grid_probabilities,
+    levels=np.linspace(0.0, 1.0, 11),
+    cmap="RdBu",
+    alpha=0.35,
+)
+plt.contour(grid_x, grid_y, grid_probabilities, levels=[0.5], colors="black", linewidths=1.5)
+plt.scatter(inputs[labels == 0, 0], inputs[labels == 0, 1], s=18, label="class 0")
+plt.scatter(inputs[labels == 1, 0], inputs[labels == 1, 1], s=18, label="class 1")
+plt.legend()
+plt.show()
+```
+
+如果运行后边界仍接近一条直线，通常不是前面的理论出了问题，而是隐藏层宽度、训练轮数或学习率还不够。只要黑色等高线开始顺着两类点之间的缝隙弯折，前面关于“非线性让模型跳出线性边界”的讨论就会立刻变得具体。
 
 这一步也把本节前面的技术链重新闭环了。输入是二维坐标，网络先通过 $\mathrm{ReLU}(W_1 x + b_1)$ 构造隐藏表示，再通过 $W_2 h + b_2$ 给出 logit；而边界本质上就是所有满足 $z(x) = 0$ 的点构成的集合。线性模型时，这条边界通常是直线；加了隐藏层和非线性后，它就能弯折。只要在图上看到这个变化，前面关于“非线性改变表达能力”的讨论就会一下子具体起来。
 
@@ -448,6 +656,30 @@ $$
 先看一个最容易被忽略、但又非常关键的事实：如果网络里每一层都只是线性变换，那么把很多层串起来，并不会带来本质上新的表达能力。原因很简单，线性映射的复合仍然是线性映射；把偏置算进去，多层仿射变换的复合最终也仍然可以折叠成一个更大的仿射变换。
 
 这个事实的教学意义很大。它提醒我们，“把层堆深”本身并不神奇。真正让深度网络跳出线性模型边界的，不是层数这个数字，而是线性层之间插入的非线性操作。如果没有这些非线性，多层网络在函数上并没有获得新的弯折能力，只是在参数化方式上变复杂了。
+
+这个结论最好不要只靠代数相信一次。下面直接随机采样两层线性参数，把它们折叠成一层，再比较两种写法的输出差异。真正要看的只有最后那一行最大误差。
+
+```python
+import numpy as np
+
+
+rng = np.random.default_rng(0)
+inputs = rng.standard_normal((6, 3))
+W1 = rng.standard_normal((4, 3))
+b1 = rng.standard_normal(4)
+W2 = rng.standard_normal((2, 4))
+b2 = rng.standard_normal(2)
+
+hidden = inputs @ W1.T + b1
+two_layer_outputs = hidden @ W2.T + b2
+combined_weight = W2 @ W1
+combined_bias = W2 @ b1 + b2
+one_layer_outputs = inputs @ combined_weight.T + combined_bias
+
+print(f"max difference: {np.abs(two_layer_outputs - one_layer_outputs).max():.6e}")
+```
+
+如果最大误差已经接近机器精度，就说明“堆很多层线性层”确实只是在换一种参数化方式，并没有带来新的函数类别。
 
 换句话说，只有线性层的深网络，不能靠“深”本身去表示复杂决策边界。它更像是对输入做了一次整体的线性重编码，却没法根据输入所在区域切换不同的局部行为。这也是为什么我们一直把“线性层 + pointwise nonlinearity 的交替堆叠”看成神经网络最典型的骨架。
 
@@ -505,14 +737,6 @@ $$
 
 这个问题没有一个靠单一指标就能彻底回答的简单公式，但把它单独拎出来已经很有帮助。它能提醒我们避免一种常见误区：把“训练得很好”误当成“问题已经解决”。
 
-### 8.4 训练误差与测试表现的区别
-
-把泛化讲得更落地一点，就要回到训练误差和测试误差的区别。训练误差衡量的是模型对已经见过样本的拟合程度；测试误差衡量的是模型对未见样本的推广能力。两者相关，但绝不是一回事。真正危险的，往往不是训练误差本身，而是训练误差和测试误差之间的泛化缺口。
-
-这就解释了为什么一个模型可能出现两种完全不同的失败。第一种是训练误差和测试误差都高，说明模型连训练数据都没学好，问题更可能出在表示能力或优化上。第二种是训练误差很低，但测试误差明显更高，说明模型在训练集上拟合得太细，开始吃进噪声或偶然细节，这就是过拟合的典型图景。
-
-把这一节放在 Lecture 1 的最后，有一个很明确的目的：前面讲模型、损失、梯度、优化器、深度和非线性时，读者很容易被技术细节吸走；而这三个基本问题把视角重新拉回来了。我们做深度学习，不只是为了搭一个能跑的网络，而是始终在同时面对三个问题：模型能不能表示、训练能不能找到、结果能不能泛化。后面所有更具体的架构和实验，基本都可以重新投影回这三个问题。
-
 ## 9 推荐阅读
 
 ### 9.1 MIT 6.7960
@@ -534,3 +758,54 @@ $$
 
 - https://distill.pub/2017/momentum/
 - https://simons.berkeley.edu/talks/ilya-sutskever-openai-2023-08-14
+
+## 10 作业：从基础讲义走向现代 LLM
+
+这一讲的作业不只是为了巩固前面的概念，也是在为后续 advanced LLM 的阅读和实验搭桥。我们的目标不是让每个小组在一两天内“研究完一个大主题”，而是沿着一条明确的技术脉络，抓住一个最核心的问题：为什么现代大模型训练里，会越来越稳定地偏向某一种设计选择。
+
+这三组作业都应满足同样的约束。第一，工作量控制在两人一到两天内完成；第二，尽量使用统一的最小训练 scaffold，只改一个核心模块；第三，既要有一个最小可复现的实验，也要有一段简短的“从基础到现代”的技术脉络说明。最终交付物不追求大而全，而应当让组内成员真正看清：这个设计最初在解决什么问题，后来为什么演化成了今天 LLM 里的常见选择。
+
+### 10.1 第 1 组：优化器脉络，从 SGD 到 AdamW
+
+这一组的主题是参数更新规则。主线不是“AdamW 好不好”，而是从最基本的梯度下降出发，理解为什么会有 SGD、为什么后来会出现 Adam，以及 AdamW 为什么要把 weight decay 从自适应更新里拆开。最后要回答的问题是：为什么今天很多 LLM 训练默认会落到 AdamW 这一路，而不是停留在最原始的 SGD 或未经解耦的 Adam。
+
+建议最小实验保持克制：在同一个数据集、同一个小模型上，对比 `SGD`、`Adam` 和 `AdamW` 的训练曲线与最终验证表现。这里不要求做大规模调参，而是要求控制变量，尽量让组员看清优化器本身带来的差异。实验之外，还需要写一段简短说明，把这条脉络压缩成“SGD 为什么不够、Adam 解决了什么、AdamW 又修正了什么”。
+
+建议交付物：
+- 一份可复现实验命令与环境说明。
+- 一张训练 / 验证曲线对比图。
+- 一页以内的结论，说明三种优化器的主要差异，以及现代 LLM 偏向 AdamW 的原因。
+
+### 10.2 第 2 组：归一化脉络，从 BatchNorm 到 RMSNorm
+
+这一组的主题是训练稳定性与归一化方式。主线不应停在“归一化能不能加快训练”，而应继续追问：为什么 CNN 时代大量使用 BatchNorm，而到了序列模型和 Transformer 里，大家更常使用 LayerNorm；又为什么在更现代的 LLM 实践里，RMSNorm 成为越来越常见的选择。最后要回答的问题是：RMSNorm 相比更早的归一化方式，到底保留了什么、又简化了什么。
+
+建议这一组不要把范围铺得太大。更稳妥的做法是先用一段短文字交代 `BatchNorm -> LayerNorm -> RMSNorm` 的演化逻辑，再在一个最小模型里比较 `LayerNorm` 和 `RMSNorm` 的训练行为；如果时间允许，可以再把“无归一化”作为额外基线。重点不是把所有 normalization 家族都试一遍，而是抓住“为什么 LLM 更偏好 RMSNorm”这个问题。
+
+建议交付物：
+- 一页以内的技术脉络说明，解释三类 normalization 的使用场景变化。
+- 一张最小实验结果图，展示 `LayerNorm` 与 `RMSNorm` 的训练差异。
+- 一段简短结论，说明 RMSNorm 在现代 LLM 中流行的合理性，以及它可能的局限。
+
+### 10.3 第 3 组：激活函数脉络，从 ReLU 到 SwiGLU
+
+这一组的主题是非线性与门控。主线应当从早期的 `sigmoid / tanh` 起步，说明饱和与梯度传播问题为什么会让实践走向 ReLU；再往后，解释为什么现代模型会进一步采用 `GELU` 或带门控结构的 `SwiGLU`。最后要回答的问题是：相比“单纯做一次逐点非线性”，SwiGLU 这样的门控激活到底带来了什么，这又为什么适合今天的 LLM。
+
+建议最小实验也保持聚焦：在统一的前馈块或小模型上，对比 `ReLU`、`GELU` 和 `SwiGLU` 的训练行为与最终效果。实验的意义不是证明某个函数永远最好，而是帮助读者建立一个更稳的直觉：激活函数不仅决定“有没有非线性”，也会影响梯度、信息流动和表示能力。组内文字部分则需要把这条演化线压缩清楚，避免把注意力分散到太多变体上。
+
+建议交付物：
+- 一份简短说明，概括 `sigmoid / tanh -> ReLU -> GELU / SwiGLU` 的演化原因。
+- 一张实验结果图，比较不同激活函数的训练曲线或最终指标。
+- 一段结论，说明为什么现代 LLM 常见 `SwiGLU`，以及它相对更简单激活的主要收益。
+
+### 10.4 三组共同要求
+
+为了让这三组作业真正形成从基础讲义到 advanced LLM 的桥梁，三组最终汇报都应回答同样的四个问题：
+
+- 这个模块最初在解决什么训练问题？
+- 社区为什么从更早的做法演化到今天的主流选择？
+- 在一个最小实验里，我们看到了什么支持或限制这种选择的现象？
+- 如果把这个模块放回现代 LLM 训练流程里，它为什么值得被默认采用？
+
+换句话说，这些作业的目标不是“各自学一个零散技巧”，而是练习一种更接近真实实验室工作的能力：从基础机制出发，做最小可复现实验，理解设计演化，再把结果和现代系统选择联系起来。后面学更具体的 Transformer、预训练和对齐方法时，这种能力会比单独记住某一个组件名字更重要。
+

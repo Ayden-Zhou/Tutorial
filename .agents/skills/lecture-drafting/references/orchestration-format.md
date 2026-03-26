@@ -24,7 +24,7 @@ Keep the lecture-level brief short and operational.
 ## Worker Assignment Template
 
 ```md
-Use `$rough-draft` on [target file].
+Use the `rough-drafter` subagent on [target file]. It should execute `$rough-draft` within its assigned scope.
 
 Your ownership:
 - write scope: ## 3 to ## 4

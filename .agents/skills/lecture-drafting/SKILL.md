@@ -1,13 +1,13 @@
 ---
 name: lecture-drafting
-description: Coordinate a full rough lecture draft by splitting sections across multiple `rough-draft` workers, then merging them into one material-complete lecture draft. Use when one lecture is large enough to benefit from parallel section drafting, when references should be allocated section by section, or when one agent should own lecture-level mergeability constraints instead of making every rough-draft worker rewrite the whole lecture.
+description: Coordinate a full rough lecture draft by splitting sections across multiple `rough-drafter` subagents that execute `rough-draft`, then merging them into one material-complete lecture draft. Use when one lecture is large enough to benefit from parallel section drafting, when references should be allocated section by section, or when one agent should own lecture-level mergeability constraints instead of making every rough-drafter worker rewrite the whole lecture.
 ---
 
 # Lecture Drafting
 
 ## Overview
 
-Draft one whole lecture by orchestrating multiple section-level `rough-draft` workers and then merging their outputs into a single material-complete rough lecture draft. Own the lecture-level decisions that should not be duplicated across section workers: section boundaries, reference allocation, intro/outro ownership, source-anchor conventions, terminology consistency, and final merge cleanup.
+Draft one whole lecture by orchestrating multiple section-level `rough-drafter` subagents and then merging their outputs into a single material-complete rough lecture draft. Each worker subagent executes the repository's `rough-draft` skill. Own the lecture-level decisions that should not be duplicated across section workers: section boundaries, reference allocation, intro/outro ownership, source-anchor conventions, terminology consistency, and final merge cleanup.
 
 ## Workflow
 
@@ -37,8 +37,8 @@ Draft one whole lecture by orchestrating multiple section-level `rough-draft` wo
 - Tell each worker they are not responsible for lecture-wide introduction, conclusion, terminology normalization, or whole-lecture deduplication.
 - Tell each worker to keep local section quality high while avoiding edits outside their assigned scope.
 
-4. Spawn `rough-draft` workers.
-- Use `rough-draft` as the worker skill for section-local drafting.
+4. Spawn `rough-drafter` workers.
+- Use the `rough-drafter` subagent for section-local drafting; it should execute the repository's `rough-draft` skill.
 - Pass each worker only the minimum context needed:
   - the target file,
   - the lecture plan,

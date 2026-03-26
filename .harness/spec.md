@@ -1,5 +1,27 @@
 ## Pending Task
 
+### Pending Infrastructure: Demo Figure Pipeline
+
+Goal:
+- 为由 demo 代码直接生成的教学图补一层统一脚手架，而不是把这部分复杂度立即压进当前 `Skill 6: Demo Insertion`。
+- 支持在 lecture 需要 loss 曲线、决策边界、attention heatmap 或其他代码生成图时，完成“运行程序 -> 记录数据 -> 统一画图风格 -> 保存到 `images/<part name>/` -> 再插回讲义”的闭环。
+
+Why pending:
+- 如果要把这件事做得可复用，仅靠当前 lecture 内联 code block 还不够；通常还需要统一的运行入口、数据记录格式、命名规则、图片落盘路径和绘图 style。
+- 这已经更像一层实验/可视化基础设施，而不是当前 `Demo Insertion` 里顺手补几行 `matplotlib`。
+- 在没有这层脚手架之前，`Skill 6` 仍以“直接插入最小可运行 demo，必要时允许最小 figure-from-code”作为主职责，而不是默认承担稳定的图表产线。
+
+Likely requirements later:
+- 一个轻量但统一的运行入口，用来执行 demo 并产出可复现结果。
+- 一个极简数据记录约定，用来保存 loss、accuracy、boundary grid、attention map 等绘图输入。
+- 一套统一的 plotting style，避免每讲各自画出风格漂移很大的图。
+- 明确图片输出目录与命名约定，例如 `images/<part name>/`。
+- 讲义中的 image block 与生成脚本、输出图片之间的可追溯关系。
+
+Current decision:
+- 暂不为这件事新建独立 skill，也暂不扩展当前 `demo-insertion` 到完整图表产线。
+- 先把它记为 pending infrastructure；等这类需求足够多时，再决定是扩展 `Skill 6` 还是额外抽出一层专门脚手架。
+
 ### 1. Skill: Lecture Curation
 
 Goal:
@@ -72,7 +94,7 @@ Non-goals:
 - 不追求一次性写成最终讲义。
 - 不为了流畅或简洁而过早删掉可能有价值的 insight、例子、机制解释或过渡表述。
 - 不把粗草稿写成原文摘抄拼贴或大段复制；应整理成可继续重写的教程草稿。
-- 不最终决定具体代码块写什么；如果需要具体演示代码，由 Skill 6 负责。
+- 不在当前阶段直接写最终 demo 代码；如果需要最终演示代码与插入，由 Skill 6 负责；如果需要从现成图片资源中挑选并插入图片，由 Skill 7 负责。
 
 Inputs:
 - 单个 lecture 的计划文档。
@@ -98,7 +120,7 @@ Negative constraints:
 ### 3. Skill: Lecture Drafting
 
 Goal:
-- 对整讲 rough drafting 做编排：将不同 section 分派给多个 `rough-draft` worker，再由主 agent 统一合并成一版材料完整的 lecture 粗草稿。
+- 对整讲 rough drafting 做编排：将不同 section 分派给多个 `rough-drafter` subagent，由这些 subagent 执行 `rough-draft`，再由主 agent 统一合并成一版材料完整的 lecture 粗草稿。
 - 该 skill 的核心任务是 lecture-level drafting orchestration 与 merge，而不是替代 `rough-draft` 去亲自重写每一个局部 section。
 
 When to use:
@@ -112,7 +134,7 @@ Artifact flow:
 Responsibilities:
 - 读取 lecture plan、现有草稿和提供的 references，识别可并行 drafting 的 section 边界。
 - 生成一份简短 drafting brief，明确 section ownership、reference allocation、术语/记号约束、source anchor 风格，以及哪些全局段落只允许主 agent 处理。
-- 将不同 `##` 或必要时的 `###` section 分配给多个 `rough-draft` worker，并明确各自 write scope。
+- 将不同 `##` 或必要时的 `###` section 分配给多个 `rough-drafter` subagent，并明确各自 write scope；这些 subagent 只执行 `rough-draft`。
 - 要求 worker 只负责局部 section 的材料保全与粗草稿写作，不负责 lecture 开头/结尾、全局 framing 或整讲术语归一。
 - 在 worker 返回后，由主 agent 统一合并各 section 粗稿，处理标题层级、明显重复、术语一致性、source anchor 风格，以及最小必要的 section 连接。
 - 确保最终文稿读起来像一版完整 rough draft，而不是多个 section draft 的机械拼接。
@@ -172,7 +194,7 @@ Non-goals:
 - 不强制每个小节使用完全一致的结构。
 - 不默认重新通读全部参考资料；粗草稿应当是主要工作底稿。
 - 不把 revise 简化成只修语气和措辞；重点仍然是认知路径与教学推进。
-- 不作为最后一步去插入或删除具体代码块；代码演示的最终决策由 Skill 6 负责。
+- 不作为最后一步去直接写入或删除具体 demo 代码块；demo 的最终生成与插入由 Skill 6 负责，现成图片资源的筛选与插入由 Skill 7 负责。
 
 Inputs:
 - Skill 2 或 Skill 3 产出的 lecture 粗草稿。
@@ -197,7 +219,7 @@ Instruction template:
 - 抽象概念的讲解，必须尽量绑定到最小例子、空的 code block placeholder、picture placeholder、图示说明或反例中的至少一种。
 - 正式定义、公式和术语应在读者已经形成初步直觉后引入。
 - 一次只引入当前问题所需的最小新概念，避免在单个小段中叠加过多新抽象。
-- 如果当前 section 需要代码或图来完成理解闭环，但 Skill 6 尚未介入，可以显式留下空的 code block placeholder 或 picture placeholder，说明这里要观察什么、为什么需要它。
+- 如果当前 section 需要代码或图来完成理解闭环，但 Skill 6 或 Skill 7 尚未介入，可以显式留下空的 code block placeholder 或 picture placeholder，说明这里要观察什么、为什么需要它。
 - 代码块必须服务于理解，不只是展示实现。
 - 每一段文字都应当有推进性，让读者比上一段多看清一层机制。
 - 允许不同章节采用不同展开方式，但整体上应保持“由具体到抽象、由现象到机制、由局部到系统”的叙述方向。
@@ -225,7 +247,7 @@ Negative constraints:
 ### 5. Skill: Lecture Revision
 
 Goal:
-- 对整讲 lecture revision 做编排：将不同 section 分派给多个 `writing-revision` worker，再由主 agent 统一完成整讲收口，并在最后执行一次 audit-only 二次检查。
+- 对整讲 lecture revision 做编排：将不同 section 分派给多个 `writing-reviser` subagent，由这些 subagent 执行 `writing-revision`，再由主 agent 统一完成整讲收口，并在最后执行一次 audit-only 二次检查。
 - 该 skill 的核心任务是 lecture-level orchestration、integration 与窄范围 residue audit，而不是替代 `writing-revision` 去重写每一个局部 section。
 
 When to use:
@@ -239,7 +261,7 @@ Artifact flow:
 Responsibilities:
 - 读取整讲草稿，识别可并行 revision 的 section 边界。
 - 默认将同文件夹内编号减一的 lecture 视为上一讲，只由主 agent 生成一份简短的 continuity brief。
-- 将不同 `##` 或必要时的 `###` section 分配给多个 `writing-revision` worker，并明确各自 write scope。
+- 将不同 `##` 或必要时的 `###` section 分配给多个 `writing-reviser` subagent，并明确各自 write scope；这些 subagent 只执行 `writing-revision`。
 - 要求 worker 只负责局部 section 重写，不负责上一讲顺承、全讲 framing 或全局术语改写。
 - 在 worker 返回后，由主 agent 统一处理上一讲到当前讲开头的承接、section 间桥接、术语和记号一致性，以及重复内容删除。
 - 在整讲 integration 之后，执行一次 audit-only 二次检查；该检查只负责拦截写作脚手架、课程结构元话语、source-aware 残留、术语/记号不一致、公式转义污染和明显重复 framing 等 lecture-level 残留问题。
@@ -274,39 +296,41 @@ Negative constraints:
 ### 6. Skill: Demo Insertion
 
 Goal:
-- 在单个 lecture 中判断哪些位置应插入演示代码块，以及哪些位置不应插入。
-- 插入的代码块必须服务于理解，风格极简，接近“可运行的伪代码”，而不是工程化实现。
-- 插入一些科学图表 
-- 该 skill 是 lecture 编写流程的最后一步之一，用来决定最终是否需要 code block，以及 code block 具体如何出现。
+- 在单个 lecture 中识别哪些位置真正需要 demo，并在这些位置直接生成并插入极简、可运行的 code block。
+- 当 demo 的教学收益明显高于纯文字说明时，不只给出建议，而是把 demo 本身写进 lecture；必要时也可以插入由这些代码直接生成的最小观测图。
+- 该 skill 是需求驱动的：先从讲义哪里存在理解缺口出发，再决定是否需要 demo，而不是先看手头有什么素材可插。
 
 When to use:
-- 当 lecture 的文字结构和写作逻辑已经基本稳定，需要决定最终哪些地方插入代码演示时。
-- 当某些 section 需要通过极简代码来建立直觉、验证机制或展示现象时。
+- 当 lecture 的文字结构和写作逻辑已经基本稳定，需要把真正的教学 demo 落到文稿里时。
+- 当某些 section 只有通过运行一个极小实验、观察一条曲线或比较两种行为，读者才容易真正建立直觉时。
 
 Artifact flow:
 - In: revised lecture draft
-- Out: demo plan / minimal code blocks
+- Out: lecture draft with inserted runnable demos
 
 Responsibilities:
-- 判断某一段概念是否值得通过代码演示来建立直觉、展示现象或验证机制。
-- 只在代码能明显提升理解时插入 code block；如果文字、图示或公式已经足够清楚，则不插入。
-- 为适合演示的概念设计最小可运行代码块，优先展示机制而不是完整系统。
-- 让代码块与前后的 text block 紧密配合，使读者知道代码在观察什么、为什么值得运行。
-- 尽量把每个代码块组织成若干个短小函数，避免把逻辑散落在长脚本中。
-- 默认少写代码块；只有在代码能显著增加理解时才写。
+- 判断某一段概念是否值得通过 demo 来建立直觉、展示现象、验证机制或比较行为。
+- 只在 demo 能明显提升理解时插入 code block；如果文字、图示或公式已经足够清楚，则不插入。
+- 为适合演示的概念设计最小可运行代码块，并把它们直接写入 lecture，优先展示机制而不是完整系统。
+- 当最小 demo 的自然输出就是一张曲线、散点图或示意图时，可以把这类由 demo 直接生成的图作为 demo 的一部分插入。
+- 让 demo 与前后的 text block 紧密配合，使读者知道代码在观察什么、为什么值得运行，以及运行后应看到什么。
+- 默认少写 demo；只有在 demo 能显著增加理解时才写。
 
 Non-goals:
 - 不为了“看起来像 notebook”而机械增加代码块数量。
 - 不写工程化、生产化或可复用性优先的实现。
 - 不引入防御性编程、配置系统、日志系统、命令行接口、类层次或多余抽象。
 - 不把 tutorial code block 写成完整库函数或项目模块。
+- 不从网页或现成图片库里大量搜图；现成图片资源的筛选与插入由 Skill 7 负责。
 - 不扩展 lecture 的理论覆盖范围。
+- 不只停留在“建议哪里可以加 demo”；如果决定需要 demo，就应直接生成并插入。
 
 Decision rules:
-- 当代码能够帮助读者观察一个现象、理解一个机制、比较两种行为、或验证一个推导时，优先插入代码块。
-- 当内容主要是定义、历史背景、术语整理、经验总结或高层框架时，通常不插入代码块。
-- 当某段内容若没有代码就会显得空泛，或者读者运行一个极小例子后能立刻获得直觉时，应考虑插入代码块。
-- 如果代码块不能明显带来新的观察，而只是把文字重复翻译成实现，则不要插入。
+- 当代码能够帮助读者观察一个现象、理解一个机制、比较两种行为、或验证一个推导时，优先考虑插入 demo。
+- 当内容主要是定义、历史背景、术语整理、经验总结或高层框架时，通常不插入 demo。
+- 当某段内容若没有运行一个极小例子就会显得空泛，或者读者运行后能立刻获得直觉时，应考虑插入 demo。
+- 如果 demo 不能明显带来新的观察，而只是把文字重复翻译成实现，则不要插入。
+- 如果某个理解缺口更适合由现成图片来弥补，而不是由代码运行结果来弥补，应把任务交给 Skill 7，而不是勉强写 demo。
 
 Code style constraints:
 - 代码必须极简，像能运行的伪代码。
@@ -317,28 +341,82 @@ Code style constraints:
 - 变量名、函数名和输入都应服务于教学清晰度，而不是工程通用性。
 
 Inputs:
-- 单个 lecture 的 skeleton 或草稿。
+- 单个 lecture 的 revised draft。
 - 当前 lecture 的 section 目标与上下文。
-- 必要时的相关资料与参考实现。
+- 必要时的相关资料、参考实现或已有 placeholder。
 
 Outputs:
-- 建议插入代码块的位置清单。
-- 每个代码块的教学目的说明。
-- 极简代码块草稿。
-- 不建议插入代码块的位置与原因。
+- 已直接插入 demo 后的 lecture 文稿。
+- 每个 demo 的教学目的说明。
+- 极简、可运行的最终 code block。
+- 若 demo 会自然产出图形，则给出相应的最小生成图与插入方式。
+- 对未插入 demo 的关键位置给出简短原因。
 
 Suggested artifacts:
+- `docs/<target_lecture>.md`
 - `specs/lectures/<lecture_name>_demos.md`
-- `specs/lectures/<lecture_name>_code_blocks.md`
+
+### 7. Skill: Figure Curation
+
+Goal:
+- 在单个 lecture 中读取现成图片资源，筛选哪些图真正值得进入讲义，以及它们应插在什么位置。
+- 该 skill 是资源驱动的：先看已经有哪些图可用，再判断其中哪些图有教学价值，而不是先假设某处一定要插图。
+- 支持两类图片来源：仓库内已有图片（例如 `@image/<part name>` 下的图片）以及用户提供网页中的现成图片链接。
+
+When to use:
+- 当 lecture 的文字结构和写作逻辑已经基本稳定，并且用户已经提供一批本地图片或网页链接时。
+- 当我们希望复用现成图片来帮助读者建立几何直觉、趋势判断、结构印象或实验现象时。
+
+Artifact flow:
+- In: revised lecture draft + candidate figure resources
+- Out: figure curation plan / inserted image blocks
+
+Responsibilities:
+- 读取现有图片资源，判断哪些图真正有教学价值，哪些图虽然存在但不值得插入。
+- 将选中的图片映射到具体 section 或段落，说明它为什么放在这里、希望读者从图里看到什么。
+- 对本地图片，插入指向仓库内已有图片的 image block。
+- 对网页图片，在用户已经提供网页的前提下，定位适合插入的具体图片 URL，并插入指向该图片 URL 的 image block。
+- 为每张保留的图补最小必要的 caption、引导语或观察提示，使图片与上下文叙述连起来。
+- 默认宁缺毋滥；如果一张图不能明显改善理解，即使它可用，也不应插入。
+
+Non-goals:
+- 不生成新的图片、曲线或示意图；需要代码生成的图交给 Skill 6。
+- 不从零开始做大规模开放式搜图；默认只处理用户给定的本地图资源或网页。
+- 不因为“手头有图”就强行往讲义里插图。
+- 不扩展 lecture 的理论覆盖范围。
+
+Decision rules:
+- 当一张现成图片能更快帮助读者建立几何直觉、趋势判断、结构印象或实验现象时，应考虑插入。
+- 当图片只是重复正文已经足够清楚的内容，或者需要很长解释才能看懂时，通常不插入。
+- 当多张图表达的是同一个意思时，优先保留最直接、最干净、与当前 section 最贴合的一张。
+- 当网页中有多张候选图时，应优先选择来源稳定、主题聚焦、与正文叙述粒度一致的图片。
+
+Inputs:
+- 单个 lecture 的 revised draft。
+- 用户提供的本地图片资源，例如 `@image/<part name>`。
+- 用户提供的网页链接；必要时从网页中定位具体图片 URL。
+- 当前 lecture 的 section 目标与上下文。
+
+Outputs:
+- 候选图片资源的筛选结果。
+- 建议插入图片的位置清单。
+- 每张保留图片的教学目的、caption 或引导语。
+- 指向本地图片路径或具体网页图片 URL 的 image block。
+- 不建议插入的图片及原因。
+
+Suggested artifacts:
+- `specs/lectures/<lecture_name>_figures.md`
+- `specs/lectures/<lecture_name>_image_blocks.md`
 
 ### Workflow Boundary
 
 - Skill 1 负责单个 lecture 的资料筛选、内容取舍与 section 结构设计。
 - Skill 2 负责在既定 lecture plan 下写出一版材料完整的 lecture 粗草稿。
-- Skill 3 负责整讲级的 rough-draft orchestration：可并行分派多个 `Skill 2` worker，并在最后统一合并成一版材料完整的 lecture 粗草稿。
+- Skill 3 负责整讲级的 rough-draft orchestration：可并行分派多个 `rough-drafter` subagent，由它们执行 `Skill 2`，并在最后统一合并成一版材料完整的 lecture 粗草稿。
 - Skill 4 负责单 section 或单 lecture局部范围内的重写、删改和教学风格上的 revise。
 - Skill 5 负责整讲级的 revision orchestration：可并行分派多个 `Skill 4` worker，并在最后统一处理上一讲顺承、section 桥接、术语一致性、去重复，以及一次 audit-only 二次检查。
-- Skill 6 负责在最后阶段判断何时插入演示代码块，并生成极简的 tutorial code blocks。
+- Skill 6 负责在最后阶段按理解缺口判断是否需要 demo，并把极简、可运行的 tutorial demos 直接生成并插入 lecture。
+- Skill 7 负责在最后阶段基于现成图片资源做 figure curation：先看有哪些图可用，再决定哪些图值得插入以及插在哪里。
 - Skill 1 先出方案，再通过用户交互收敛，不默认一次性定稿。
 - Skill 1 不写教程正文。
 - Skill 2 不重做 lecture 层面的内容取舍，除非发现明显缺口；但它必须把应保留的材料真正写进粗草稿，而不是只给提纲。
@@ -349,6 +427,7 @@ Suggested artifacts:
 - Skill 4 不负责 lecture-level 的上一讲顺承与整讲 integration；这些任务由 Skill 5 统一负责。
 - Skill 4 可以为保证局部认知连续性少量补写桥接段、最小例子、空的 code block placeholder 或 picture placeholder，但不应借此扩展 lecture 的理论覆盖范围，也不应重做大规模资料抽取。
 - Skill 5 负责唯一一次 lecture-level continuity brief，并确保上一讲顺承只在整讲层面处理，不由各 section worker 重复承担。
-- Skill 5 可以建议需要例子或演示，但不最终决定 code block 的插入与实现。
+- Skill 5 可以建议哪里需要例子、demo 或图片，但不最终生成并插入 demo code block，也不负责现成图片资源的最终筛选。
 - Skill 5 的 audit-only pass 只允许窄范围、低风险的 lecture-level 清理；如果问题需要第二轮完整重写，应明确暴露为后续任务，而不是在 audit 中静默完成。
-- Skill 6 不负责扩展 lecture 的理论覆盖范围；它只决定是否需要代码演示，以及代码应如何以极简形式出现。
+- Skill 6 不负责扩展 lecture 的理论覆盖范围；它只在必要位置直接生成并插入极简、可运行的 demo。
+- Skill 7 不负责扩展 lecture 的理论覆盖范围；它只基于已有图片资源判断哪些图值得插入，以及这些图应如何与正文配合。

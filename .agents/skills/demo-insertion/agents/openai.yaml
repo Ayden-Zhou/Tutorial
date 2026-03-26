@@ -1,0 +1,4 @@
+interface:
+  display_name: "Demo Insertion"
+  short_description: "Insert runnable teaching demos into lectures"
+  default_prompt: "Use $demo-insertion to insert minimal runnable teaching demos into this lecture wherever code would close a real understanding gap."
