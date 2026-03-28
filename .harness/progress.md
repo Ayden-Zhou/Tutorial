@@ -3,7 +3,11 @@
 ## Current Status
 ### 主要变动
 - `docs/core/01_Deep_Learning/02_Approximation_and_Generalization.md` 当前已完成整讲 `## 1-7` 的 rough draft。
-- 本次额外清理了该讲里若干处可能导致 Markdown/KaTeX 渲染不稳的绝对值与范数写法，统一优先使用 `\left|...\right|` 与 `\left\|...\right\|`。
+- 本次已按确认方案重排该讲 `## 4-7` 的子章节顺序，并补了必要的衔接句，使“插值问题 -> 搜索空间收缩 -> 经典复杂度失效 -> 深网泛化线索”这条主线连续下来。
+- `## 7` 中原先混在一起的三类内容已拆开：
+  - 结构偏置、Transformer 偏置、软偏置并入 `## 5`
+  - 过参数化、假设分布、PAC-Bayes 与压缩界并入 `## 6`
+  - `## 7` 只保留版本空间、优化偏置、实践先验、组合式泛化与未解问题
 
 ### 未完成
 - 这讲尚未进入 `writing-revision` / `lecture-revision`。
@@ -15,6 +19,18 @@
 - 无
 
 ## History Logs
+### 2026-03-28
+- 按用户确认的最终方案，重排了 `docs/core/01_Deep_Learning/02_Approximation_and_Generalization.md` 的 `## 4-7`：
+  - `4.6` 改为 `简单性偏好`
+  - `## 5` 改为 `搜索空间收缩`，吸收原 `7.1-7.3`
+  - `## 6` 改为 `经典复杂度的局限`，吸收原 `7.8-7.9`
+  - `## 7` 改为 `深网泛化线索`，只保留版本空间、优化偏置、实践先验、组合式泛化和未解问题
+- 同步补写了多处节间过渡句，避免重排后出现“刚讲过又回头补”的阅读跳跃。
+- 验证：
+  - `rg -n '^## |^### ' docs/core/01_Deep_Learning/02_Approximation_and_Generalization.md`
+  - `sed -n '380,760p' docs/core/01_Deep_Learning/02_Approximation_and_Generalization.md`
+  - `sed -n '760,840p' docs/core/01_Deep_Learning/02_Approximation_and_Generalization.md`
+
 ### 2026-03-28
 - 按用户要求继续扫 `docs/core/01_Deep_Learning/02_Approximation_and_Generalization.md` 里可能不稳的绝对值/范数公式写法，把 3 处 `|...|` / `\|...\|` 统一改成更稳的 `\left|...\right|` / `\left\|...\right\|`：
   - `|f(x)-g(x)|\le\varepsilon`

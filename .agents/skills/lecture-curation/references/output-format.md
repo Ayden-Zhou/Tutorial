@@ -14,27 +14,38 @@ Use this reference when writing the lecture framework file.
 
 ## Title Naming Rules
 
-- Name each heading after the teaching job it performs, not after the source file's wording.
-- Default to lecture-note style phrasing rather than conversational prompts.
-- Prefer concise noun phrases or mechanism/comparison/judgment forms such as `分箱逼近的基本思路`、`通用逼近的含义与边界`、`深度与宽度的表达效率`.
-- Use question-style headings only when the question itself is pedagogically central and still reads naturally in a printed outline.
-- Avoid casual heading openings such as `我们到底在问什么问题`、`为什么已经有启发`、`还能往哪里找解释`.
-- Keep sibling headings grammatically consistent when possible.
-- Prefer concise Chinese phrasing over translated textbook jargon.
-- Promote an intuitive explanation into its own heading when it materially improves understanding.
-- Do not create extra levels only for visual symmetry.
+**`##` 级标题（section）**
+- 短名词短语或动名词短语，通常 2–5 个词。
+- 不用冒号。不用疑问句（"为何/如何/为什么"句式）。
+- 命名这一节"是什么内容"，不陈述"这节的论点或结论"。
+
+**`###` 级标题（subsection）**
+- 短名词短语，通常 2–4 个词。
+- 如果用冒号，冒号后只能跟一个短限定词（一个名词短语），不能是完整解释或句子。
+- 不用疑问句。不用"XX 说明了什么"、"XX 为何/如何 YY"等动宾展开句式。
+- **冒号检查**：写完标题后，如果含冒号，删掉冒号后半段，看剩下的部分能否独立表达主题。能独立则删掉后半段；不能独立则重写整个标题为纯名词短语。
+
+**通用规则**
+- 名称来自教学任务，不来自源文件措辞。
+- 避免口语化开头：`我们到底在问什么`、`为什么已经有启发`、`还能往哪里找解释`。
+- 兄弟标题尽量保持语法一致。
+- 优先简洁中文，不照搬教材术语。
+- 有高价值直觉解释时，提升为独立标题，但不靠增加层级来凑对称。
 
 Good section titles:
-- `## 1 AI 任务与学习问题的转化`
-- `## 4 训练闭环的工作机制`
-- `## 7 经典泛化理论及其局限`
-- `### 4.3 反向传播的梯度来源`
+- `## 1 逼近与泛化：问题的区分`（H1 级允许冒号，冒号后是短限定词）
+- `## 4 收缩搜索空间的三种工具`
+- `## 6 经典复杂度理论的边界`
+- `### 4.3 多个插值解并存`
+- `### 6.1 U 型图景的隐含前提`
+- `### 7.5 优化过程作为先验`
 
-Weak section titles:
-- `## 1 我们到底在学什么`
-- `## 2 为什么这个方法已经有启发`
-- `## 3 还能往哪里找解释`
-- `## 4 Other Topics`
+Weak section titles (do not use):
+- `## 5 泛化视角：数据、先验与假设空间如何缩小搜索`（冒号后是完整解释句）
+- `## 6 泛化视角：经典复杂度图景为何不足以解释深网`（疑问式展开）
+- `### 5.3 假设空间作为硬约束：搜索更快，但可能把真解排除在外`（冒号后是结论句）
+- `### 7.2 Transformer 的结构偏置为何常被低估`（疑问句式）
+- `## 1 我们到底在学什么`（口语化疑问）
 
 ## Section Block Format
 
@@ -78,7 +89,7 @@ Record a lightweight source anchor at the `###` subsection level by default.
 Use this pattern:
 
 ```md
-### 7.2 Transformer 的结构偏置为何常被低估
+### 7.2 Transformer 的结构偏置
 
 小节参考：
 - `../../../references/01_Deep_learning/02_Approximation_and_Generalization/generalization.md`：`### 40 Idea #1: Architectural symmetries`
@@ -87,11 +98,11 @@ Use this pattern:
 When a subsection genuinely merges two sources, use the lightest two-line form that still disambiguates:
 
 ```md
-### 4.3 多个插值解为何让泛化变得困难
+### 4.3 多个插值解并存
 
 小节参考：
 - `../../../references/.../generalization_problem.md`：`### 11.2.2 以多项式回归为视角理解泛化`
-- `../../../references/.../generalization.md`：`### 11 这两种都“拟合了数据”`
+- `../../../references/.../generalization.md`：`### 11 这两种都”拟合了数据”`
 ```
 
 Keep `小节参考` lightweight. It is a drafting anchor, not a second `主要参考` block.

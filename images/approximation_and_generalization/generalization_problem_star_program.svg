@@ -1,0 +1,13 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="900" height="520" viewBox="0 0 900 520">
+  <rect width="900" height="520" fill="#f6f3ee"/>
+  <rect x="40" y="40" width="820" height="440" rx="18" fill="#fffdf9" stroke="#d7cfc2" stroke-width="2"/>
+  <text x="80" y="110" font-family="Menlo, Consolas, Monaco, monospace" font-size="34" fill="#2f2a24">def star(x, y):</text>
+  <text x="110" y="165" font-family="Menlo, Consolas, Monaco, monospace" font-size="30" fill="#2f2a24">if x == 3 and y == 2:</text>
+  <text x="160" y="210" font-family="Menlo, Consolas, Monaco, monospace" font-size="30" fill="#2f2a24">return 36</text>
+  <text x="110" y="255" font-family="Menlo, Consolas, Monaco, monospace" font-size="30" fill="#2f2a24">elif x == 7 and y == 1:</text>
+  <text x="160" y="300" font-family="Menlo, Consolas, Monaco, monospace" font-size="30" fill="#2f2a24">return 49</text>
+  <text x="110" y="345" font-family="Menlo, Consolas, Monaco, monospace" font-size="30" fill="#2f2a24">elif x == 5 and y == 2:</text>
+  <text x="160" y="390" font-family="Menlo, Consolas, Monaco, monospace" font-size="30" fill="#2f2a24">return 100</text>
+  <text x="110" y="435" font-family="Menlo, Consolas, Monaco, monospace" font-size="30" fill="#2f2a24">elif x == 2 and y == 2:</text>
+  <text x="160" y="470" font-family="Menlo, Consolas, Monaco, monospace" font-size="30" fill="#2f2a24">return 16</text>
+</svg>
