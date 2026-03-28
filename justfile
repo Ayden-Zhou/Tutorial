@@ -14,3 +14,6 @@ push:
     git add .
     git commit -m "Log: 一次空提交"
     git push
+
+sync-public:
+    .venv/bin/python src/sync_public_repo.py

@@ -1,0 +1,1 @@
+../../../.agents/skills/lecture-revision/SKILL.md

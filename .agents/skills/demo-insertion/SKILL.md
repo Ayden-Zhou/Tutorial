@@ -29,7 +29,7 @@ Insert final teaching demos into this tutorial project's lecture markdown. Treat
 - Insert a demo only when code will help the reader observe a phenomenon, understand a mechanism, compare two behaviors, or validate a compact derivation.
 - Do not insert a demo when the surrounding text, math, or an existing figure already makes the point cleanly.
 - Prefer one sharp demo over multiple repetitive ones.
-- If the best support is an existing image rather than generated code output, hand the task back to `figure-curation`.
+- If the lecture is missing a static image that should already have been preserved from existing references, do not take ownership of that gap here; hand it back to `rough-draft`, `writing-revision`, or a user-requested incremental figure pass.
 
 4. Design the smallest runnable experiment.
 - Keep only the minimum data, parameters, and control flow needed to expose the idea.
@@ -83,7 +83,7 @@ Avoid demos for these cases:
 - pure terminology, historical framing, or reading guidance,
 - material that would require too much setup for too little insight,
 - code that merely rephrases the prose without creating a new observation,
-- material better served by a curated existing image.
+- material already explained cleanly by an existing image in the lecture draft.
 
 ## Demo Checklist
 
@@ -101,7 +101,7 @@ Before finishing, check each inserted demo against this list:
 
 - Produce final lecture-facing demo code, not placeholders.
 - Do not do large-scale prose revision here; hand that work back to `writing-revision` or `lecture-revision`.
-- Do not curate existing images from local folders or webpages; hand that work to `figure-curation`.
+- Do not curate existing images from local folders or webpages; the default place for those images is the rough-draft workflow, not this skill.
 - Do not expand the lecture's theoretical scope just to justify a demo.
 - Do not turn tutorial code into reusable library code.
 - Do not leave reader-facing `TODO`, `本节目标`, or collaborator notes in the lecture body.

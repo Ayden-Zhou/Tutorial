@@ -38,7 +38,14 @@ Weak section titles:
 
 ## Section Block Format
 
-Record the main supporting references at the `##` section level.
+Record the main supporting references at the `##` section level, using exact source heading anchors.
+
+- For each reference, include:
+  - the relative path to the source file,
+  - the exact source heading(s) or heading range that support this section,
+  - a short phrase describing what that source contributes.
+- Prefer source headings over synthetic page ranges. If the heading already contains a page label such as `### 24 title`, cite that heading text directly.
+- If a reference contributes to multiple sections, record it separately under each with the relevant heading anchors and role.
 
 Use this pattern:
 
@@ -46,16 +53,48 @@ Use this pattern:
 ## 1 AI 任务与学习问题的转化
 
 本节目标：
-- 让读者先把“学习问题”理解成从数据中拟合输入到输出的映射。
+- 让读者先把”学习问题”理解成从数据中拟合输入到输出的映射。
 
 主要参考：
-- `../../../references/01_Deep_learning/01_Deep_learing_Foundatiosn/1_intro_2025.pdf`
-- `../../../references/01_Deep_learning/01_Deep_learing_Foundatiosn/lec-5.pdf`
+- `../../../references/01_Deep_learning/01_Deep_learing_Foundatiosn/1_intro_2025.md`：`## 监督学习问题`，`### 输入与输出`；用于建立任务抽象
+- `../../../references/01_Deep_learning/01_Deep_learing_Foundatiosn/lec-5.md`：`## 为什么需要学习`；用于补充“规则难以手写”的动机
 
 ### 1.1 输入输出映射的基本形式
 
 ### 1.2 数据、标签与目标
 ```
+
+## Subsection Block Format
+
+Record a lightweight source anchor at the `###` subsection level by default.
+
+- Use `小节参考：` directly under the `###` heading.
+- At this level, keep the anchor minimal:
+  - relative path to the source file,
+  - exact source heading(s) that mainly support this subsection.
+- Do not repeat a long “用于……” explanation at every `###` unless the subsection truly mixes multiple sources and the distinction matters for later drafting.
+- When one `###` clearly comes from one main source idea, a single anchor line is preferred.
+
+Use this pattern:
+
+```md
+### 7.2 Transformer 的结构偏置为何常被低估
+
+小节参考：
+- `../../../references/01_Deep_learning/02_Approximation_and_Generalization/generalization.md`：`### 40 Idea #1: Architectural symmetries`
+```
+
+When a subsection genuinely merges two sources, use the lightest two-line form that still disambiguates:
+
+```md
+### 4.3 多个插值解为何让泛化变得困难
+
+小节参考：
+- `../../../references/.../generalization_problem.md`：`### 11.2.2 以多项式回归为视角理解泛化`
+- `../../../references/.../generalization.md`：`### 11 这两种都“拟合了数据”`
+```
+
+Keep `小节参考` lightweight. It is a drafting anchor, not a second `主要参考` block.
 
 ## Relative Path Rule
 
@@ -72,4 +111,5 @@ Example:
 
 - Keep the document at the framework level.
 - Use short bullets for `本节目标` or `取舍说明` only when they help future drafting.
+- Keep `##`-level references richer than `###`-level references: section blocks explain the section spine, subsection blocks only point drafting to the right source passage.
 - Do not write full explanatory paragraphs in this step.

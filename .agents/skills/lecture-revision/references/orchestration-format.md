@@ -33,7 +33,7 @@ Recommended assignment shape:
 - scope: `## 3 深度与宽度的表达效率`
 - ownership: revise this section only
 - preserve:
-  - local placeholders
+  - local image blocks or placeholders
   - useful local examples
 - do not do:
   - previous-lecture recap
@@ -52,6 +52,7 @@ After workers return, handle these yourself:
 - bridges between `##` sections
 - terminology and notation normalization
 - duplicate setup paragraphs created by parallel workers
+- duplicate image blocks or captions created by parallel workers
 - removal of conflicting lecture-level framing
 
 ## Anti-Patterns
@@ -61,4 +62,5 @@ Avoid these failure modes:
 - every worker adds its own recap of the previous lecture
 - multiple workers rewrite the lecture introduction
 - workers rename core terms differently in different sections
+- workers drop a useful local image because they assume another section will keep it
 - the lead integrator redoes all local prose instead of focusing on integration

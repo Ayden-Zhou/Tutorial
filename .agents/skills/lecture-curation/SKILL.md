@@ -1,6 +1,6 @@
 ---
 name: lecture-curation
-description: Plan the structure of a single lecture from multiple reference files and user instructions, then write the lecture framework directly to the target Markdown file under docs/. Use when the user provides PDFs, notes, slides, papers, or other reference paths for one lecture and needs help deciding what to cover, how to organize sections and subsections, how to preserve high-value intuitive explanations as structure, and which reference files mainly support each section.
+description: Plan the structure of a single lecture from multiple reference files and user instructions, then write the lecture framework directly to the target Markdown file under docs/. Use when the user provides pre-processed markdown reference files under references/ for one lecture and needs help deciding what to cover, how to organize sections and subsections, how to preserve high-value intuitive explanations as structure, and which reference files mainly support each section.
 ---
 
 # Lecture Curation
@@ -18,8 +18,8 @@ Read the provided references for one lecture, compare their teaching value, and 
 - If the instruction does not identify a single lecture target, stop and ask for clarification.
 
 2. Read the source materials.
-- Read every reference file the user provides.
-- Build a short source map for each file: main theme, high-value intuitive explanations, problem motivations, mechanism explanations, examples, and low-value detail.
+- Read every markdown reference file the user provides. These files are already structured with page-level headings (e.g. `### 24 title`); use the existing heading structure directly as the page-level source map skeleton.
+- Build a short source map for each file: main theme, high-value intuitive explanations, problem motivations, mechanism explanations, examples, and low-value detail. For each piece of high-value content, note the exact heading path where it appears. If the heading itself already carries a page label (for example `### 24 title`), cite that heading directly rather than inventing a separate page-range layer.
 - Compare overlap and disagreement across sources before deciding structure.
 
 3. Design the lecture structure.
@@ -35,14 +35,17 @@ Read the provided references for one lecture, compare their teaching value, and 
 
 4. Write the framework.
 - Write directly to the target Markdown file.
-- Follow [references/output-format.md](references/output-format.md) for heading numbering, title naming, and section-level reference formatting.
-- Record the main supporting references under each `##` section using relative paths from the output document.
+- Follow [references/output-format.md](references/output-format.md) for heading numbering, title naming, `##`-level main-reference formatting, and `###`-level lightweight subsection anchors.
+- Record the main supporting references under each `##` section using relative paths from the output document, and make each reference precise enough to reopen the exact source region later.
+- For each `##`-level main reference, include: the relative file path, the exact source heading(s) or heading range, and a short phrase describing what that source contributes to the section.
+- Record a lightweight `小节参考` block under each `###` subsection by default. At this level, prefer minimal anchors: relative path plus exact source heading(s). Omit extra role descriptions unless the subsection genuinely mixes multiple sources in a way that could confuse later drafting.
 - Use concise placeholders such as `本节目标` or `取舍说明` when they help the next drafting step.
 - Do not paste long source text. Abstract and reorganize instead.
 
 5. Review the result.
 - Check that the section order follows a coherent learning path.
-- Check that every major section has explicit supporting references.
+- Check that every major section has explicit and precise supporting references.
+- Check that each `###` has a lightweight source anchor precise enough for drafting to recover the right source passage without redoing source mapping.
 - Check that the framework preserves high-value intuitive content even when the source treated it as a side note.
 - Check that the headings can stand alone in a printed outline and still read like a lecture handout.
 - Check that the output is still a framework, not a full lecture draft.
@@ -67,4 +70,4 @@ Read the provided references for one lecture, compare their teaching value, and 
 
 ## Resource
 
-- `references/output-format.md`: heading rules, title naming rules, and the per-section reference block format.
+- `references/output-format.md`: heading rules, title naming rules, the `##`-level main reference block format, and the `###`-level lightweight subsection reference format.

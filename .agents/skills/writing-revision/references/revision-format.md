@@ -37,6 +37,14 @@ Recommended shape:
 
 修订后的正文……
 
+<div align="center">
+  <img src="../../../references/01_Deep_learning/.../images/double_descent.png" width="50%">
+  <br>
+  double descent 示意图
+</div>
+
+这里直接告诉读者应该观察什么，而不是只把图丢在这里。
+
 ```python
 # code block placeholder: 这里后续要用一个最小例子展示经验风险下降但测试误差不一定同步下降
 ```
@@ -60,7 +68,7 @@ Example:
 
 ### Picture Placeholder
 
-Use a short blockquote or HTML comment when a figure is needed but not yet inserted.
+Use a short blockquote or HTML comment only when a figure is clearly needed, but the rough draft did not preserve one and you cannot safely reconstruct it from the current draft.
 
 Examples:
 
@@ -85,8 +93,18 @@ Do not leave these notes in normal prose paragraphs.
 ## Source Rules
 
 - Do not add `主要参考` blocks to the lecture body.
+- Remove rough-draft `主要参考` blocks and similar section-goal scaffolding during revision unless the user explicitly wants to preserve them.
 - Keep source information only when it has real revision value.
 - Prefer HTML comments or separate revision notes over reader-facing reference lists.
+
+## Image Rules
+
+- Prefer revising existing image blocks over replacing them with placeholders.
+- Convert image blocks to the centered HTML figure format when you revise them, even if the rough draft used a different wrapper.
+- Keep each image close to the paragraph or subsection it supports.
+- Tighten captions and lead-in sentences so the reader knows what to observe.
+- Remove an image only when it is redundant, misleading, or no longer fits the revised teaching path.
+- If an image still needs later review, leave a short HTML comment after it instead of turning the section back into a picture placeholder.
 
 ## Voice Rules
 

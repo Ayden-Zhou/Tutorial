@@ -1,0 +1,16 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(python docs/core/01_Deep_Learning/01_Pytorch_and_Tensor.py)",
+      "Bash(uv run:*)",
+      "Bash(rm /home/data/users/zhouyf/myprojects/Tutorial/.claude/commands/lecture-revision.md)",
+      "Bash(ln -s ../../.agents/skills/lecture-revision/SKILL.md /home/data/users/zhouyf/myprojects/Tutorial/.claude/commands/lecture-revision.md)",
+      "Bash(rm /home/data/users/zhouyf/myprojects/Tutorial/.claude/agents/writing-reviser.md)",
+      "Bash(ln -s ../../.agents/skills/writing-revision/SKILL.md /home/data/users/zhouyf/myprojects/Tutorial/.claude/agents/writing-reviser.md)",
+      "Bash(ln -s ../../.agents/skills/lecture-revision/SKILL.md /home/data/users/zhouyf/myprojects/Tutorial/.claude/agents/lecture-revision.md)",
+      "Bash(rmdir /home/data/users/zhouyf/myprojects/Tutorial/.claude/commands/)",
+      "Bash(mkdir -p /home/data/users/zhouyf/myprojects/Tutorial/.claude/skills/lecture-revision)",
+      "Bash(ln -s ../../../.agents/skills/lecture-revision/SKILL.md /home/data/users/zhouyf/myprojects/Tutorial/.claude/skills/lecture-revision/SKILL.md)"
+    ]
+  }
+}

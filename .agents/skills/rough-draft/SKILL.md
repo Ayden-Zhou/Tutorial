@@ -7,7 +7,7 @@ description: Write a project-specific rough lecture draft from an existing lectu
 
 ## Overview
 
-Write a material-complete rough draft for this tutorial project from a settled lecture plan and the provided references. Preserve high-value explanations, insights, examples, formulas, and mechanism descriptions in draft form so later revision can focus on reorganization and teaching quality rather than re-reading source files.
+Translate reference materials into a comprehensive Chinese rough draft for this tutorial project, guided by the lecture plan. The goal at this step is coverage, not selection: preserve all in-scope material faithfully so later revision can choose what survives.
 
 ## Workflow
 
@@ -23,24 +23,24 @@ Write a material-complete rough draft for this tutorial project from a settled l
 
 2. Read the planning artifact and references.
 - Read the lecture plan first and treat it as the scope boundary.
-- Read every reference file the user provides for the requested scope.
+- Read every reference file the user provides for the requested scope. When the lecture plan records page ranges (`pp. X–Y`) for a reference, read those pages directly instead of scanning the whole file.
+- Check whether the current lecture or topic folder has a nearby `images/` directory. When it exists, treat it as part of the source materials for the same scope rather than as a later optional add-on.
 - Reopen adjacent sections from the existing draft when section-scoped work depends on them for continuity.
-- Build a compact source map while reading:
-  - which explanations are worth preserving,
-  - which examples or counterexamples are worth carrying forward,
-  - which formulas, symbols, or local derivation skeletons are necessary for the section to remain technically self-contained,
-  - which mechanism descriptions are essential,
-  - which algorithmic steps or computation chains must remain explicit,
-  - which passages are low-value repetition.
-- Prefer extracting insight and explanation paths over extracting isolated facts, but do not drop the technical core that makes the explanation mechanically correct.
+- While reading, note everything within the lecture plan's scope that should be translated or preserved: explanations, examples, counterexamples, formulas, symbols, derivation skeletons, mechanism descriptions, algorithmic steps, computation chains, and images with clear teaching value.
+- Do not judge what is "low-value" at this step. If in doubt, translate it.
 
-3. Decide what must survive into the rough draft.
-- Preserve the material that later writing revision would be unhappy to lose: good motivations, crisp intuitions, informative examples, strong bridge sentences, explicit mechanism explanations, and the minimum formula/notation set required to recover the technical core without reopening the source PDFs.
-- Preserve enough redundancy that later revision can cut safely.
-- Compress low-value repetition, secondary notation boilerplate, and exhaustive detail that does not help the teaching path.
-- Do not compress away formulas, definitions, symbol bindings, update equations, objective functions, or derivation skeletons when they are part of the section's core mechanism.
-- Keep source anchors for important claims, explanations, examples, formulas, and especially for any wording or framing that may need to be revisited.
-- Distinguish source-derived material from your own connective tissue.
+3. Translate comprehensively.
+- Translate all content within the lecture plan's scope: motivations, intuitions, examples, counterexamples, mechanism explanations, formulas, symbol definitions, update equations, objective functions, derivation skeletons, and algorithmic steps.
+- When multiple sources cover the same point differently, translate all versions and keep them side by side. Writing revision will choose.
+- When a nearby image can clearly help the reader build geometric intuition, trend judgment, structural impression, or an experimental picture that the current section is already discussing, insert it directly into the rough draft with a short lead-in or caption. This is the default stage for first-time image insertion.
+- Normalize every inserted image into a centered HTML figure block with an explicit caption; do not flatten it into a bare Markdown image.
+- Do not insert an image just because a file exists. Skip images that merely repeat the prose, are hard to understand without long detours, or do not clearly belong to the current section.
+- When several nearby images express the same point, keep the one that is most direct and most tightly coupled to the local teaching path.
+- Do not compress, summarize, or skip in-scope content at this step. If an explanation seems repetitive, translate it anyway.
+- Keep source anchors for all translated claims, examples, and formulas so writing revision can trace back if needed.
+- Keep image paths traceable. Use relative paths from the target markdown file and add only the minimum caption or observation hint needed for later revision. When possible, converge the reference to the lecture's final image location under the repository `images/` directory instead of leaving it on a temporary source path.
+- Keep section-level rough-draft scaffolding such as `本节目标`, `主要参考`, and short `handoff` / `revise-note` comments when they still help later merge or revision. Do not strip them here just to make the draft look finished; reader-facing cleanup belongs to revision.
+- Only skip content that is clearly outside the lecture plan's scope.
 
 4. Draft directly in markdown.
 - Write continuous prose, not just headings and bullets.
@@ -49,15 +49,16 @@ Write a material-complete rough draft for this tutorial project from a settled l
 - Keep the lecture in Chinese by default, except for terms that are genuinely clearer in English.
 - Write bridge sentences when needed so later section-by-section revision still has visible continuity.
 - When a section depends on formulas or symbolic definitions, include them in the rough draft together with a short explanation of what each symbol or computation step is doing.
+- When a section depends on an existing image for intuition, place the image block near the paragraph it supports instead of deferring it to a later curation stage. Do the initial image placement here rather than inserting the figure first and expecting revision to relocate it later.
 - Use standard Markdown math delimiters for formulas that should render as mathematics: inline math uses `$...$`, display equations or short derivation blocks use `$$...$$`. Do not wrap formulas in backticks unless you are referring to the literal source text or showing non-rendering pseudocode.
 - Reserve backticks for code, file paths, API names, config keys, and other literal identifiers rather than mathematical expressions.
 - When a section depends on a mechanism chain, keep the chain explicit rather than replacing it with intuition-only prose.
-- If the user requests section-scoped mode, modify only the requested section area and preserve untouched neighboring sections unless the user explicitly asks for broader edits.
 
 5. Leave revise guidance for the next step.
 - Mark places where the draft is structurally weak, repetitive, too abstract, or missing a good local bridge.
 - Point out where later writing revision should decide between multiple retained explanations or examples.
 - Point out any unresolved conflicts across sources.
+- Point out when an inserted image is useful but may need relocation, caption tightening, or comparison against a nearby alternative.
 - Keep these notes short and local so they help revision without turning the draft into commentary.
 
 ## Section-Scoped Drafting
@@ -84,21 +85,23 @@ Treat section-scoped drafting as a first-class mode, not as an afterthought.
 - Prefer preserving a good explanation path over preserving source order.
 - Preserve source-specific insight even when the current wording is not final.
 - Keep formulas and formal definitions whenever they are needed to make the section technically usable, not only when they add local flavor.
+- Treat nearby `images/` resources as part of the section's technical material when they are the fastest way to preserve a phenomenon, shape, comparison, or structural intuition.
 - Prefer rendered math over code styling for equations: use `$...$` and `$$...$$` consistently so later revision does not need to normalize formula formatting.
 - Prefer a minimal but explicit technical core: objective function, key variable meanings, update equations, and short derivation skeletons beat prose-only summaries.
 - If a mechanism is easiest to preserve as a short equation chain or algorithm sketch, keep that structure in the rough draft and explain it briefly in words.
-- When several sources cover the same point, keep the version with the strongest teaching value and record the others as support if still useful.
 - When a source has a genuinely strong turn of explanation, preserve the idea and anchor it, even if the final prose will later be rewritten.
 
 ## Boundaries
 
 - Produce a rough draft, not a polished lecture.
+- Do not delete section-goal or section-reference scaffolding merely for polish; those removals belong mostly to `writing-revision` / `lecture-revision`.
 - Do not take ownership of lecture-wide parallel drafting orchestration or final merge; hand those tasks to `lecture-drafting`.
 - Do not downgrade into a skeleton, bullet list, or material dump.
-- Do not copy long stretches of source wording.
+- Translate faithfully; the goal at this step is coverage, not prose quality.
 - Do not decide final demo-code insertion in this step.
+- Do not generate new figures or write code just to make a picture; only use existing images that already belong to the current scope.
+- You may make the minimum path adjustment needed for an inserted image to point at its intended final location under `images/`, but do not expand the task into large-scale image asset migration.
 - Do not broaden the lecture beyond the lecture plan unless the user explicitly asks for an expansion.
-- Do not silently drop a high-value example or insight just to make the draft sound smoother.
 - Do not silently replace a section's technical core with intuition-only prose when the source relies on formulas, symbolic definitions, or explicit computation steps.
 
 ## Resource

@@ -7,13 +7,12 @@ description: Coordinate a full lecture revision by splitting sections across mul
 
 ## Overview
 
-Revise one whole lecture by orchestrating multiple section-level `writing-reviser` subagents, integrating their outputs into a single coherent lecture draft, and then running one narrow audit-only pass. Each worker subagent executes the repository's `writing-revision` skill. Own the lecture-level decisions that should not be duplicated across section workers: previous-lecture continuity, section-to-section bridges, terminology consistency, final deduplication, and final residue checks that are too global for section workers.
+Revise one whole lecture by orchestrating section-level `writing-reviser` subagents, integrating their outputs into one coherent draft, and then running one narrow audit-only pass. Own the lecture-level decisions that should not be duplicated across section workers.
 
 ## Workflow
 
 1. Confirm the orchestration scope.
 - Work on one lecture only.
-- Use this skill only when the task is whole-lecture or clearly multi-section.
 - If the user wants only one section or subsection revised, hand the task to `$writing-revision` instead of orchestrating workers.
 - Resolve the target lecture file before doing anything else.
 
@@ -32,8 +31,6 @@ Revise one whole lecture by orchestrating multiple section-level `writing-revise
 - Partition the lecture into disjoint `##` sections by default.
 - Use `###`-level splitting only when a `##` section is too large or the user explicitly asks for finer parallelism.
 - Give each worker a clear write boundary.
-- Tell each worker they are not responsible for previous-lecture continuity or whole-lecture framing.
-- Tell each worker to keep local section quality high while avoiding edits outside their assigned scope.
 
 4. Spawn `writing-reviser` workers.
 - Use the `writing-reviser` subagent for section-local rewriting; it should execute the repository's `writing-revision` skill.
@@ -43,7 +40,7 @@ Revise one whole lecture by orchestrating multiple section-level `writing-revise
   - nearby headings or adjacent sections when needed,
   - the continuity brief only as terminology/duplication guidance, not as a request to write lecture-wide bridges.
 - Make ownership explicit so workers do not rewrite the same section.
-- Ask workers to preserve placeholders and useful local notes that still help later integration.
+- Ask workers to preserve useful local image blocks, placeholders, and notes that still help later integration.
 
 5. Integrate the lecture yourself.
 - Merge worker outputs back into the lecture draft.
@@ -52,6 +49,8 @@ Revise one whole lecture by orchestrating multiple section-level `writing-revise
   - bridges between major sections,
   - consistent terminology and notation across sections,
   - removal of duplicated explanations created by parallel workers,
+  - removal of duplicated images or captions created by parallel workers,
+  - relocation of image blocks that ended up attached to the wrong paragraph after merge,
   - smoothing abrupt tone or abstraction jumps across section boundaries.
 - Keep the integrated draft in tutorial-author voice.
 - Do not leave worker-management commentary in the lecture body.
@@ -61,19 +60,18 @@ Revise one whole lecture by orchestrating multiple section-level `writing-revise
 - The goal of this pass is detection-first and cleanup-second: catch lecture-level residue without turning the pass into a second full rewrite.
 - This pass may directly fix only narrow, mechanical, low-risk issues such as:
   - writing-scaffold prose,
+  - leftover rough-draft section scaffolding such as `本节目标` or `主要参考`,
   - course-structure meta commentary such as `把这一节放在...` or `前面讲了...后面会...`,
   - source-aware residue such as `主要参考`, `参考材料里`, or `slides 上`,
   - duplicated framing created by parallel workers,
   - notation inconsistency,
   - math-format or escape corruption,
+  - duplicated image blocks or obviously stale image captions,
   - short bridge sentences that are obviously abrupt after merge.
 - If a problem would require substantial local rewriting, re-arguing the section, or structural reorganization, do not silently perform a second full revision pass; note the issue briefly instead.
 
 7. Finish with a whole-lecture pass.
-- Check whether the lecture now reads like one lecture rather than several revised sections stitched together.
-- Verify that only the integrated draft owns cross-lecture continuity.
-- Verify that no section worker accidentally inserted a second lecture introduction or repeated previous-lecture recap.
-- Verify that the audit-only pass stayed narrow and did not turn into a second full rewrite.
+- Verify the integrated draft reads like one lecture, that lecture-level continuity appears only once, and that the audit-only pass stayed narrow.
 - Leave only the smallest necessary placeholders or revision notes.
 
 ## Worker Assignment Rules
@@ -82,7 +80,6 @@ Revise one whole lecture by orchestrating multiple section-level `writing-revise
 - Tell workers they are not alone in the codebase and should not revert others' edits.
 - Tell workers to revise only their assigned section.
 - Tell workers not to add lecture-wide framing, previous-lecture recap, or global terminology changes unless explicitly instructed.
-- Tell workers to preserve nearby terminology choices unless there is a strong local reason not to.
 
 ## Integration Checklist
 
@@ -92,6 +89,7 @@ Before finishing, check these lecture-level questions:
 - Is previous-lecture continuity written once at lecture level, rather than repeated by multiple sections?
 - Do adjacent sections connect cleanly, without duplicated setup or abrupt jumps?
 - Are notation, term choices, and problem framing consistent across all revised sections?
+- Do adjacent sections still use image blocks coherently, without duplicated figures or captions left over from local revisions?
 - Did section workers stay inside their scopes, or does the merged lecture still contain conflicting framing?
 - Does the merged lecture still contain scaffold prose, course-structure meta commentary, source-aware residue, or obvious math-format corruption?
 - Did the final audit stay narrow, or did it accidentally become a second full rewrite?
@@ -99,7 +97,6 @@ Before finishing, check these lecture-level questions:
 
 ## Boundaries
 
-- Use this skill for lecture-level orchestration and integration, not for isolated one-section revision.
 - Do not make every section worker read and own previous-lecture continuity.
 - Do not let workers compete over the lecture introduction, conclusion, or global terminology.
 - Do not redo every section locally after workers return; focus on integration and lecture-level fixes.
